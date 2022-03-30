@@ -16,7 +16,7 @@ class SearchCell: UICollectionViewCell {
         img.contentMode = .scaleAspectFill
         img.clipsToBounds = true
         img.translatesAutoresizingMaskIntoConstraints = false
-        img.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
+        img.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
         img.alpha = 0
         
         return img
@@ -25,12 +25,12 @@ class SearchCell: UICollectionViewCell {
     private lazy var descLab: UILabel = {
         let lab = UILabel()
         lab.textColor = .black
-        lab.numberOfLines = 0
+        lab.numberOfLines = 1
         lab.textAlignment = .center
         lab.lineBreakMode = .byWordWrapping
         lab.font = .systemFont(ofSize: 14)
         lab.translatesAutoresizingMaskIntoConstraints = false
-        lab.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
+        lab.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
         
         return lab
     }()

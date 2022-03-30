@@ -86,6 +86,7 @@ class PhotoCell: UICollectionViewCell {
             descLab.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             descLab.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             descLab.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10),
+            descLab.heightAnchor.constraint(equalToConstant: 20),
             
             indicator.centerXAnchor.constraint(equalTo: img.centerXAnchor),
             indicator.centerYAnchor.constraint(equalTo: img.centerYAnchor)
