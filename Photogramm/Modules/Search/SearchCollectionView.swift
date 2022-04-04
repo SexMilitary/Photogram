@@ -136,7 +136,6 @@ extension SearchCollectionView: UICollectionViewDelegate {
         if alpha < 1 && alpha > 0 {
             loadingView.loader.alpha = alpha
         }
-        print(difference)
     }
     
     func getStatusBarHeight() -> CGFloat {
