@@ -10,6 +10,8 @@ import UIKit
 
 class PhotoCell: UICollectionViewCell {
     
+    static let reuseId = "PhotoCell"
+    
     private lazy var img: WebImageView = {
         let img = WebImageView()
         img.backgroundColor =  UIColor.black.withAlphaComponent(0.08)

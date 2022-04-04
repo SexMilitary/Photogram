@@ -33,9 +33,12 @@ class PinterestLayout: UICollectionViewLayout {
     }
     
     override func prepare() {
-        guard cache.isEmpty == true, let collectionView = collectionView else {
+        guard let collectionView = collectionView else {
             return
         }
+        
+        contentHeight = 0
+        cache.removeAll()
         
         let columnWidth = contentWidth / CGFloat(numberOfColumns)
         var xOffset = [CGFloat]()
@@ -61,7 +64,7 @@ class PinterestLayout: UICollectionViewLayout {
             contentHeight = max(contentHeight, frame.maxY)
             yOffset[column] = yOffset[column] + height
             
-            column = column < (numberOfColumns - 1) ? (column + 1) : 0
+            column = yOffset.enumerated().max { $0.element > $1.element }?.offset ?? 0
         }
     }
     
@@ -82,4 +85,3 @@ class PinterestLayout: UICollectionViewLayout {
     }
     
 }
-

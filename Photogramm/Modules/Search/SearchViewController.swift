@@ -11,7 +11,7 @@ final class SearchViewController: UIViewController {
     
     private let photoService = SearchPhotoServices()
     
-    private var viewModel = SearchPhotos()
+    private var initialPage = 0
     
     override func loadView() {
         super.loadView()
@@ -28,19 +28,24 @@ final class SearchViewController: UIViewController {
         view = collectionView
         navigationItem.titleView = collectionView.searchBar
         
-        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationBar.prefersLargeTitles = false
     }
     
-    func search(page: Int, query: String) {
-        let request = SearchPhotoRequest(page: page, query: query)
+    func search(query: String) {
+        let request = SearchPhotoRequest(page: initialPage, query: query)
         photoService.searchPhotos(request: request) { [weak self] result in
             guard let self = self else { return }
+            self.initialPage += 1
+            
             switch result {
             case .success(let data):
-                self.viewModel = data
                 let collection = self.view as? SearchCollectionView
-                collection?.findedPhotos = data
-                collection?.reloadData()
+                if collection?.findedPhotos == nil || (collection?.findedPhotos.isEmpty ?? false) {
+                    collection?.findedPhotos = data
+                } else {
+                    collection?.findedPhotos.results.append(contentsOf: data.results)
+                }
+                
             case .failure(let error):
                 UIAlertController.alert(title: "Warning", msg: error.localizedDescription, target: self)
             }
@@ -50,7 +55,13 @@ final class SearchViewController: UIViewController {
 }
 
 extension SearchViewController: SearchCollectionViewDelegate {
-    func searchPhotos(page: Int, query: String) {
-        search(page: page, query: query)
+    var tabBarHeight: CGFloat {
+        tabBarController?.tabBar.intrinsicContentSize.height ?? 0
+    }
+    func searchPhotos(query: String) {
+        search(query: query)
+    }
+    func loadMore(query: String) {
+        search(query: query)
     }
 }

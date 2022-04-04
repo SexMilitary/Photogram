@@ -10,6 +10,8 @@ import UIKit
 
 class SearchCell: UICollectionViewCell {
     
+    static let reuseId = "SearchCell"
+    
     private lazy var img: WebImageView = {
         let img = WebImageView()
         img.backgroundColor =  UIColor.black.withAlphaComponent(0.08)
@@ -44,9 +46,9 @@ class SearchCell: UICollectionViewCell {
         return view
     }()
     
-    var info: SearchPhoto? {
+    var info: Photo? {
         didSet {
-            descLab.text = info?.altDescription
+            descLab.text = info?.photoDescription
             assignPhoto()
         }
     }
