@@ -14,7 +14,7 @@ protocol SearchCollectionViewDelegate: AnyObject {
     func loadMore(query: String)
 }
 
-class SearchCollectionView: UICollectionView {
+class SearchCollectionView: UIView {
     
     weak var searchDelegate: SearchCollectionViewDelegate?
     
@@ -24,6 +24,8 @@ class SearchCollectionView: UICollectionView {
         didSet {
             isLoading.toggle()
             reloadCollection()
+            
+            loadingView.stop()
         }
     }
     
@@ -41,19 +43,45 @@ class SearchCollectionView: UICollectionView {
     
     private var layout = PinterestLayout()
     
+    private lazy var collectionView: UICollectionView = {
+        let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.delegate = self
+        view.dataSource = self
+        view.register(SearchCell.self, forCellWithReuseIdentifier: SearchCell.reuseId)
+        view.contentInset.bottom = 100
+        
+        return view
+    }()
+    
+    lazy var loadingView = LoadingView()
+    private var loaderBottomAnchor: NSLayoutConstraint?
+    
     private let spacing: CGFloat = 10.0
     
     init() {
-        super.init(frame: .zero, collectionViewLayout: layout)
+        super.init(frame: .zero)
         
         layout.delegate = self
         
-        delegate = self
-        dataSource = self
+        addSubview(collectionView)
+        NSLayoutConstraint.activate([
+            collectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            collectionView.topAnchor.constraint(equalTo: topAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
         
-        register(SearchCell.self, forCellWithReuseIdentifier: SearchCell.reuseId)
+        addSubview(loadingView)
+        NSLayoutConstraint.activate([
+            loadingView.heightAnchor.constraint(equalToConstant: 100),
+            loadingView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            loadingView.trailingAnchor.constraint(equalTo: trailingAnchor)
+        ])
         
-        contentInset.bottom = 100
+        loaderBottomAnchor = loadingView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor,
+                                                                 constant: 100)
+        loaderBottomAnchor?.isActive = true
     }
     
     required init?(coder: NSCoder) {
@@ -62,7 +90,7 @@ class SearchCollectionView: UICollectionView {
     
     private func reloadCollection() {
         layout.prepare()
-        reloadData()
+        collectionView.reloadData()
     }
 }
 
@@ -91,10 +119,24 @@ extension SearchCollectionView: UICollectionViewDelegate {
         let buffer = bounds.height - (tabBarHeight + searchBar.frame.height + getStatusBarHeight())
         let offsetY = scrollView.contentOffset.y + searchBar.frame.height + getStatusBarHeight()
         
-        if (contentHeight * 1.05 < (buffer + offsetY)) && !isLoading {
+        if (contentHeight * 0.8 < (buffer + offsetY)) && !isLoading {
             isLoading.toggle()
             searchDelegate?.loadMore(query: searchText)
         }
+        
+        let difference = contentHeight - (buffer + offsetY - collectionView.contentInset.bottom)
+        if difference < 120 && difference > -30 {
+            if difference < 55 {
+                loadingView.start()
+            }
+            loaderBottomAnchor?.constant = difference * 3
+        }
+        
+        let alpha = (100 - difference * 4) / 100
+        if alpha < 1 && alpha > 0 {
+            loadingView.loader.alpha = alpha
+        }
+        print(difference)
     }
     
     func getStatusBarHeight() -> CGFloat {

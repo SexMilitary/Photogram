@@ -9,13 +9,18 @@ import UIKit
 
 final class LoadingView: UIView {
     
+    private var isPlay = false
+    
     static let reuseId = "LoadingCollectionViewCell"
     
     lazy var loader: UIActivityIndicatorView = {
         let view = UIActivityIndicatorView()
         view.hidesWhenStopped = true
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.startAnimating()
+        view.backgroundColor = .systemBlue
+        view.color = .white
+        view.layer.cornerRadius = 25
+        
         return view
     }()
     
@@ -28,7 +33,9 @@ final class LoadingView: UIView {
         
         NSLayoutConstraint.activate([
             loader.centerXAnchor.constraint(equalTo: centerXAnchor),
-            loader.centerYAnchor.constraint(equalTo: centerYAnchor)
+            loader.centerYAnchor.constraint(equalTo: centerYAnchor),
+            loader.widthAnchor.constraint(equalToConstant: 50),
+            loader.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
     
@@ -36,4 +43,17 @@ final class LoadingView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func start() {
+        guard !isPlay else { return }
+        isPlay.toggle()
+        loader.startAnimating()
+        loader.fadeIn(duration: 0.2)
+    }
+    
+    func stop() {
+        guard isPlay else { return }
+        isPlay.toggle()
+        loader.stopAnimating()
+        loader.fadeOut(duration: 0.2)
+    }
 }
