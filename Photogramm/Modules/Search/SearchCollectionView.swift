@@ -101,6 +101,7 @@ extension SearchCollectionView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SearchCell.reuseId, for: indexPath) as? SearchCell
         cell?.info = findedPhotos.results[indexPath.item]
+        cell?.shadowDecorate(radius: 18)
         
         return cell ?? UICollectionViewCell()
     }

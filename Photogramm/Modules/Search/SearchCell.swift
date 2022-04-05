@@ -20,13 +20,15 @@ class SearchCell: UICollectionViewCell {
         img.translatesAutoresizingMaskIntoConstraints = false
         img.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
         img.alpha = 0
+        img.layer.cornerRadius = 18
+        img.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         
         return img
     }()
     
     private lazy var descLab: UILabel = {
         let lab = UILabel()
-        lab.textColor = UIColor.black.withAlphaComponent(0.7)
+        lab.textColor = UIColor.black.withAlphaComponent(0.8)
         lab.numberOfLines = 1
         lab.textAlignment = .center
         lab.lineBreakMode = .byWordWrapping
@@ -40,7 +42,7 @@ class SearchCell: UICollectionViewCell {
     private lazy var likeImage: UIImageView = {
         let view = UIImageView()
         if let image = UIImage(systemName: "heart.fill") {
-            view.image = image.withRenderingMode(.alwaysOriginal).withTintColor(UIColor.black.withAlphaComponent(0.7))
+            view.image = image.withRenderingMode(.alwaysOriginal).withTintColor(UIColor.black.withAlphaComponent(0.8))
         }
         view.contentMode = .scaleAspectFit
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -80,10 +82,7 @@ class SearchCell: UICollectionViewCell {
     }
     
     func setupViews() {
-        layer.cornerRadius = 12
-        clipsToBounds = true
-        
-        backgroundColor = UIColor.black.withAlphaComponent(0.04)
+        backgroundColor = UIColor.white
         addSubview(img)
         addSubview(likeImage)
         addSubview(descLab)
@@ -95,15 +94,15 @@ class SearchCell: UICollectionViewCell {
             img.topAnchor.constraint(equalTo: topAnchor),
             img.leadingAnchor.constraint(equalTo: leadingAnchor),
             img.trailingAnchor.constraint(equalTo: trailingAnchor),
-            img.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -30),
+            img.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -40),
             
             likeImage.trailingAnchor.constraint(equalTo: descLab.leadingAnchor, constant: -5),
-            likeImage.widthAnchor.constraint(equalToConstant: 20),
-            likeImage.heightAnchor.constraint(equalToConstant: 20),
-            likeImage.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5),
+            likeImage.widthAnchor.constraint(equalToConstant: 16),
+            likeImage.heightAnchor.constraint(equalToConstant: 16),
+            likeImage.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12),
             
             descLab.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 25 / 2),
-            descLab.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -6),
+            descLab.centerYAnchor.constraint(equalTo: likeImage.centerYAnchor),
             
             indicator.centerXAnchor.constraint(equalTo: img.centerXAnchor),
             indicator.centerYAnchor.constraint(equalTo: img.centerYAnchor)
