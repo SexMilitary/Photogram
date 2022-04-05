@@ -153,7 +153,7 @@ extension SearchCollectionView: UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        searchBar.searchTextField.resignFirstResponder()≈
+        searchBar.searchTextField.resignFirstResponder()
     }
 }
 
