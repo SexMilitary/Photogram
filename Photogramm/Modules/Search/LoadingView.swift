@@ -20,6 +20,7 @@ final class LoadingView: UIView {
         view.backgroundColor = .systemBlue
         view.color = .white
         view.layer.cornerRadius = 25
+        view.alpha = 0
         
         return view
     }()
@@ -47,13 +48,14 @@ final class LoadingView: UIView {
         guard !isPlay else { return }
         isPlay.toggle()
         loader.startAnimating()
-        loader.fadeIn(duration: 0.2)
+        loader.fadeIn(duration: 0.15)
     }
     
     func stop() {
         guard isPlay else { return }
         isPlay.toggle()
-        loader.stopAnimating()
-        loader.fadeOut(duration: 0.2)
+        loader.fadeOut(duration: 0.3) { [weak self] in
+            self?.loader.stopAnimating()
+        }
     }
 }

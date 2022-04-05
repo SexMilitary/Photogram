@@ -83,7 +83,7 @@ class SearchCollectionView: UIView {
         ])
         
         loaderBottomAnchor = loadingView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor,
-                                                                 constant: 100)
+                                                                 constant: 0)
         loaderBottomAnchor?.isActive = true
     }
     
@@ -126,19 +126,9 @@ extension SearchCollectionView: UICollectionViewDelegate {
         if (contentHeight * 0.8 < (buffer + offsetY)) && !isLoading {
             isLoading.toggle()
             searchDelegate?.loadMore(query: searchText)
-        }
-        
-        let difference = contentHeight - (buffer + offsetY - collectionView.contentInset.bottom)
-        if difference < 120 && difference > -30 {
-            if difference < 55 {
-                loadingView.start()
-            }
-            loaderBottomAnchor?.constant = difference * 3
-        }
-        
-        let alpha = (100 - difference * 4) / 100
-        if alpha < 1 && alpha > 0 {
-            loadingView.loader.alpha = alpha
+            
+            loadingView.layoutSubviewsAnimated()
+            loadingView.start()
         }
     }
     
