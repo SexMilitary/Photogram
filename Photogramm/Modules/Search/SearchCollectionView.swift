@@ -37,6 +37,8 @@ class SearchCollectionView: UIView {
         bar.isTranslucent = false
         bar.backgroundImage = UIImage()
         bar.delegate = self
+        bar.searchTextField.delegate = self
+        bar.searchTextField.returnKeyType = .done
         
         return bar
     }()
@@ -49,6 +51,7 @@ class SearchCollectionView: UIView {
         view.delegate = self
         view.dataSource = self
         view.register(SearchCell.self, forCellWithReuseIdentifier: SearchCell.reuseId)
+        view.keyboardDismissMode = .onDrag
         view.contentInset.bottom = 100
         
         return view
@@ -148,6 +151,10 @@ extension SearchCollectionView: UICollectionViewDelegate {
         
         return statusBarHeight
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        searchBar.searchTextField.resignFirstResponder()≈
+    }
 }
 
 extension SearchCollectionView: PinterestLayoutDelegate {
@@ -167,5 +174,13 @@ extension SearchCollectionView: UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         findedPhotos.clear()
         reloadCollection()
+    }
+}
+
+extension SearchCollectionView: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        
+        return true
     }
 }

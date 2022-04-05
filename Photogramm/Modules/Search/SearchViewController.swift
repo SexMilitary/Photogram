@@ -29,6 +29,7 @@ final class SearchViewController: UIViewController {
         navigationItem.titleView = collectionView.searchBar
         
         navigationController?.navigationBar.prefersLargeTitles = false
+        navigationController?.hidesBarsOnSwipe = true
     }
     
     func search(query: String) {
