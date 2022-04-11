@@ -26,8 +26,9 @@ final class MainViewController: UIViewController {
         
         title = "Latest photos"
         view = PhotosCollectionView()
+        view.backgroundColor = .white
         
-        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationBar.prefersLargeTitles = false
     }
     
     fileprivate func loadPhotos(page: Int, perPage: Int) {

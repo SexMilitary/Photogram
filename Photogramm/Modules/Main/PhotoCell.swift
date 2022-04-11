@@ -72,7 +72,7 @@ class PhotoCell: UICollectionViewCell {
         layer.cornerRadius = 12
         clipsToBounds = true
         
-        backgroundColor = UIColor.black.withAlphaComponent(0.04)
+        backgroundColor = UIColor("#e4cece")
         addSubview(img)
         addSubview(descLab)
         addSubview(indicator)
