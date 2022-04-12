@@ -103,13 +103,17 @@ class TabNavigationMenu: UIView {
     private func activateTab(tab: Int) {
         let tabToActivate = subviews[tab]
         let borderWidth = tabToActivate.frame.size.width - 20
-        let borderLayer = CALayer()
         
-        borderLayer.backgroundColor = UIColor("#7E5A5A").cgColor
-        borderLayer.name = "active border"
-        borderLayer.frame = CGRect(x: 10, y: 0, width: borderWidth, height: 2)
+        let view = UIView()
+        view.tag = 1
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor("#7E5A5A")
+        view.alpha = 0
+        view.frame = .init(origin: .init(x: 10, y: 0), size: .init(width: borderWidth, height: 4))
         
-        tabToActivate.layer.addSublayer(borderLayer)
+        tabToActivate.addSubview(view)
+        
+        view.fadeIn(duration: 0.2)
         
         self.itemTapped?(tab)
         
@@ -118,9 +122,13 @@ class TabNavigationMenu: UIView {
     
     private func deactivateTab(tab: Int) {
         let inactiveTab = self.subviews[tab]
-        let layersToRemove = inactiveTab.layer.sublayers!.filter({ $0.name == "active border" })
+        let viewToRemove = inactiveTab.subviews.first(where: { $0.tag == 1 })
         
-        layersToRemove.forEach({ $0.removeFromSuperlayer() })
+        UIView.animate(withDuration: 0.2) {
+            viewToRemove?.alpha = 0
+        } completion: { _ in
+            viewToRemove?.removeFromSuperview()
+        }
     }
     
 }
