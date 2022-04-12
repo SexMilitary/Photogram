@@ -72,7 +72,7 @@ extension NavigationMenuBaseController: UITabBarControllerDelegate {
 class MyTransition: NSObject, UIViewControllerAnimatedTransitioning {
     
     let viewControllers: [UIViewController]?
-    let transitionDuration: Double = 0.25
+    let transitionDuration: Double = 0.2
     
     init(viewControllers: [UIViewController]?) {
         self.viewControllers = viewControllers
@@ -99,24 +99,29 @@ class MyTransition: NSObject, UIViewControllerAnimatedTransitioning {
         let frame = transitionContext.initialFrame(for: fromVC)
         var fromFrameEnd = frame
         var toFrameStart = frame
+        
         fromFrameEnd.origin.x = toIndex > fromIndex ? frame.origin.x - frame.width : frame.origin.x + frame.width
         toFrameStart.origin.x = toIndex > fromIndex ? frame.origin.x + frame.width : frame.origin.x - frame.width
         toView.frame = toFrameStart
         
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
             transitionContext.containerView.addSubview(toView)
-            UIView.animate(withDuration: self.transitionDuration, animations: {
+            UIView.animate(withDuration: self.transitionDuration,
+                           delay: 0,
+                           options: .curveEaseOut) {
                 fromView.frame = fromFrameEnd
                 toView.frame = frame
-            }, completion: {success in
+            } completion: { success in
                 fromView.removeFromSuperview()
                 transitionContext.completeTransition(success)
-            })
+            }
         }
     }
     
     func getIndex(forViewController vc: UIViewController) -> Int? {
-        guard let vcs = self.viewControllers else { return nil }
+        guard let vcs = viewControllers else { return nil }
         for (index, thisVC) in vcs.enumerated() {
             if thisVC == vc { return index }
         }
