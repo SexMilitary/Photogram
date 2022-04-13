@@ -24,6 +24,45 @@ class PhotoCell: UICollectionViewCell {
         return img
     }()
     
+    private lazy var userImg: WebImageView = {
+        let img = WebImageView()
+        img.backgroundColor =  UIColor.black.withAlphaComponent(0.08)
+        img.contentMode = .scaleAspectFill
+        img.clipsToBounds = true
+        img.translatesAutoresizingMaskIntoConstraints = false
+        img.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
+        img.alpha = 0
+        img.layer.cornerRadius = 15
+        
+        img.flashing()
+        
+        return img
+    }()
+    
+    private lazy var userLab: UILabel = {
+        let lab = UILabel()
+        lab.textColor = .white
+        lab.font = .systemFont(ofSize: 22, weight: .bold)
+        lab.translatesAutoresizingMaskIntoConstraints = false
+        
+        return lab
+    }()
+    
+    private lazy var likeLab: UILabel = {
+        let lab = UILabel()
+        lab.translatesAutoresizingMaskIntoConstraints = false
+        
+        return lab
+    }()
+    
+    private lazy var collectionsLab: UILabel = {
+        let lab = UILabel()
+        lab.translatesAutoresizingMaskIntoConstraints = false
+        lab.textAlignment = .right
+        
+        return lab
+    }()
+    
     private lazy var descLab: UILabel = {
         let lab = UILabel()
         lab.textColor = .black
@@ -50,6 +89,22 @@ class PhotoCell: UICollectionViewCell {
         didSet {
             descLab.text = info?.photoDescription
             assignPhoto()
+            
+            userImg.fadeIn(duration: 0.2)
+            userImg.set(imageURL: info?.user.profileImage.large) {
+                self.userImg.stopFlashing()
+            }
+            userLab.text = info?.user.username
+            
+            likeLab.attributedText = String.createAttributedString(firstString: "\(info?.likes ?? 0)", secondString: "likes",
+                                                                        firstTextColor: .black, secondTextColor: .lightGray,
+                                                                        firstFont: .systemFont(ofSize: 14, weight: .bold),
+                                                                        secondFont: .systemFont(ofSize: 14, weight: .medium))
+            
+            collectionsLab.attributedText = String.createAttributedString(firstString: "\(info?.user.id ?? "")", secondString: "id",
+                                                                   firstTextColor: .black, secondTextColor: .lightGray,
+                                                                   firstFont: .systemFont(ofSize: 14, weight: .bold),
+                                                                   secondFont: .systemFont(ofSize: 14, weight: .medium))
         }
     }
     
@@ -76,6 +131,12 @@ class PhotoCell: UICollectionViewCell {
         addSubview(img)
         addSubview(descLab)
         addSubview(indicator)
+        
+        addSubview(likeLab)
+        addSubview(collectionsLab)
+        
+        img.addSubview(userImg)
+        img.addSubview(userLab)
     }
     
     func setupConstraints() {
@@ -88,10 +149,28 @@ class PhotoCell: UICollectionViewCell {
             descLab.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             descLab.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             descLab.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10),
-            descLab.heightAnchor.constraint(equalToConstant: 20),
+            descLab.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.3),
             
             indicator.centerXAnchor.constraint(equalTo: img.centerXAnchor),
-            indicator.centerYAnchor.constraint(equalTo: img.centerYAnchor)
+            indicator.centerYAnchor.constraint(equalTo: img.centerYAnchor),
+            
+            likeLab.topAnchor.constraint(equalTo: img.bottomAnchor, constant: 20),
+            likeLab.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30),
+            likeLab.trailingAnchor.constraint(equalTo: collectionsLab.leadingAnchor, constant: 10),
+            
+            collectionsLab.topAnchor.constraint(equalTo: img.bottomAnchor, constant: 20),
+            collectionsLab.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30)
+        ])
+        
+        NSLayoutConstraint.activate([
+            userImg.widthAnchor.constraint(equalToConstant: 30),
+            userImg.heightAnchor.constraint(equalToConstant: 30),
+            userImg.leadingAnchor.constraint(equalTo: img.leadingAnchor, constant: 30),
+            userImg.bottomAnchor.constraint(equalTo: img.bottomAnchor, constant: -20),
+            
+            userLab.leadingAnchor.constraint(equalTo: userImg.trailingAnchor, constant: 10),
+            userLab.trailingAnchor.constraint(equalTo: img.trailingAnchor, constant: -10),
+            userLab.bottomAnchor.constraint(equalTo: img.bottomAnchor, constant: -20)
         ])
     }
     

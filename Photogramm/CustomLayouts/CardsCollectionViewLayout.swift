@@ -10,7 +10,7 @@ import UIKit
 open class CardsCollectionViewLayout: UICollectionViewLayout {
     
     // MARK: - Layout configuration
-    public var itemSize: CGSize = CGSize(width: 300, height: 500) {
+    public var itemSize: CGSize = CGSize(width: 200, height: 300) {
         didSet{
             invalidateLayout()
         }
@@ -94,7 +94,7 @@ open class CardsCollectionViewLayout: UICollectionViewLayout {
 fileprivate extension CardsCollectionViewLayout {
     
     private func scale(at index: Int) -> CGFloat {
-        let translatedCoefficient = CGFloat(index) - CGFloat(self.maximumVisibleItems) / 2
+        let translatedCoefficient = CGFloat(index) - CGFloat(maximumVisibleItems) / 2
         return CGFloat(pow(0.95, translatedCoefficient))
     }
     
@@ -119,7 +119,7 @@ fileprivate extension CardsCollectionViewLayout {
         attributes.size = itemSize
         let midY = self.collectionView.bounds.midY
         attributes.center = CGPoint(x: contentCenterX + spacing * CGFloat(visibleIndex),
-                                    y: midY + spacing * CGFloat(visibleIndex))
+                                    y: midY - spacing * CGFloat(visibleIndex) * 1.5)
         attributes.zIndex = maximumVisibleItems - visibleIndex
         
         attributes.transform = transform(atCurrentVisibleIndex: visibleIndex,
@@ -130,7 +130,7 @@ fileprivate extension CardsCollectionViewLayout {
             break
         case 1..<maximumVisibleItems:
             attributes.center.x -= spacing * percentageDeltaOffset
-            attributes.center.y -= spacing * percentageDeltaOffset
+            attributes.center.y += spacing * percentageDeltaOffset * 1.5
             
             if visibleIndex == maximumVisibleItems - 1 {
                 attributes.alpha = percentageDeltaOffset

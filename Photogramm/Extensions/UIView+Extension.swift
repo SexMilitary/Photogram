@@ -33,4 +33,42 @@ extension UIView {
         })
     }
     
+    func getStatusBarHeight() -> CGFloat {
+        var statusBarHeight: CGFloat = 0
+        let scenes = UIApplication.shared.connectedScenes
+        let windowScene = scenes.first as? UIWindowScene
+        let window = windowScene?.windows.first
+        statusBarHeight = window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
+        
+        return statusBarHeight
+    }
+}
+
+extension UIView {
+    func shake() {
+        let animation = CABasicAnimation(keyPath: "position")
+        animation.duration = 0.07
+        animation.repeatCount = 4
+        animation.autoreverses = true
+        animation.fromValue = NSValue(cgPoint: CGPoint(x: self.center.x - 10, y: self.center.y))
+        animation.toValue = NSValue(cgPoint: CGPoint(x: self.center.x + 10, y: self.center.y))
+        self.layer.removeAnimation(forKey: "position")
+        self.layer.add(animation, forKey: "position")
+    }
+    
+    func flashing() {
+        let flash = CABasicAnimation(keyPath: "opacity")
+        flash.duration = 0.5
+        flash.fromValue = 1
+        flash.toValue = 0.1
+        flash.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+        flash.autoreverses = true
+        flash.repeatCount = .infinity
+        self.layer.removeAnimation(forKey: "flash")
+        self.layer.add(flash, forKey: "flash")
+    }
+    
+    func stopFlashing() {
+        self.layer.removeAnimation(forKey: "flash")
+    }
 }

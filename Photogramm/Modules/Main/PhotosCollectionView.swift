@@ -12,14 +12,16 @@ class PhotosCollectionView: UICollectionView {
     
     var photos: Photos?
     
-    private var layout = CardsCollectionViewLayout()
-    
-    private let spacing: CGFloat = 10.0
-    
-    private var firstImageHeight: CGFloat = 0.0
-    
     init() {
+        let layout = CardsCollectionViewLayout()
         super.init(frame: .zero, collectionViewLayout: layout)
+        
+        let bounds = UIScreen.main.bounds
+        let width = bounds.width - 75
+        let height = bounds.height * 0.6
+        
+        layout.itemSize = CGSize(width: width, height: height)
+        layout.spacing = 15
         
         delegate = self
         dataSource = self

@@ -19,6 +19,7 @@ struct Photo: Codable {
     let photoDescription: String?
     let urls: Urls
     let links: PhotoLinks
+    let user: User
 
     enum CodingKeys: String, CodingKey {
         case id, width, height, color
@@ -27,6 +28,7 @@ struct Photo: Codable {
         case likedByUser = "liked_by_user"
         case photoDescription = "description"
         case urls, links
+        case user
     }
     
     var ratio: Double {
@@ -54,6 +56,12 @@ struct Urls: Codable {
 struct User: Codable {
     let id, username, name: String
     let links: UserLinks
+    let profileImage: ProfileImage
+    
+    enum CodingKeys: String, CodingKey {
+        case id, username, name, links
+        case profileImage = "profile_image"
+    }
 }
 
 // MARK: - UserLinks
@@ -64,4 +72,8 @@ struct UserLinks: Codable {
         case linksSelf = "self"
         case html, photos, likes
     }
+}
+
+struct ProfileImage: Codable {
+    let large, medium, small: String
 }

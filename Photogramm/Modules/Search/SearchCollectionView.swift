@@ -132,16 +132,6 @@ extension SearchCollectionView: UICollectionViewDelegate {
         }
     }
     
-    func getStatusBarHeight() -> CGFloat {
-        var statusBarHeight: CGFloat = 0
-        let scenes = UIApplication.shared.connectedScenes
-        let windowScene = scenes.first as? UIWindowScene
-        let window = windowScene?.windows.first
-        statusBarHeight = window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
-        
-        return statusBarHeight
-    }
-    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         searchBar.searchTextField.resignFirstResponder()
     }
