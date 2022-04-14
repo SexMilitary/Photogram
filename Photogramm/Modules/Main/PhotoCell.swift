@@ -14,10 +14,10 @@ class PhotoCell: UICollectionViewCell {
     
     private lazy var img: WebImageView = {
         let img = WebImageView()
+        img.translatesAutoresizingMaskIntoConstraints = false
         img.backgroundColor =  UIColor.black.withAlphaComponent(0.08)
         img.contentMode = .scaleAspectFill
         img.clipsToBounds = true
-        img.translatesAutoresizingMaskIntoConstraints = false
         img.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
         img.alpha = 0
         
@@ -26,10 +26,10 @@ class PhotoCell: UICollectionViewCell {
     
     private lazy var userImg: WebImageView = {
         let img = WebImageView()
+        img.translatesAutoresizingMaskIntoConstraints = false
         img.backgroundColor =  UIColor.black.withAlphaComponent(0.08)
         img.contentMode = .scaleAspectFill
         img.clipsToBounds = true
-        img.translatesAutoresizingMaskIntoConstraints = false
         img.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
         img.alpha = 0
         img.layer.cornerRadius = 15
@@ -41,21 +41,21 @@ class PhotoCell: UICollectionViewCell {
     
     private lazy var userLab: UILabel = {
         let lab = UILabel()
+        lab.translatesAutoresizingMaskIntoConstraints = false
         lab.textColor = .white
         lab.font = .systemFont(ofSize: 22, weight: .bold)
-        lab.translatesAutoresizingMaskIntoConstraints = false
         
         return lab
     }()
     
-    private lazy var likeLab: UILabel = {
+    private lazy var leftDetailLab: UILabel = {
         let lab = UILabel()
         lab.translatesAutoresizingMaskIntoConstraints = false
         
         return lab
     }()
     
-    private lazy var collectionsLab: UILabel = {
+    private lazy var rightDetailLab: UILabel = {
         let lab = UILabel()
         lab.translatesAutoresizingMaskIntoConstraints = false
         lab.textAlignment = .right
@@ -63,15 +63,34 @@ class PhotoCell: UICollectionViewCell {
         return lab
     }()
     
+    private lazy var separator: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .lightGray
+        
+        return view
+    }()
+    
     private lazy var descLab: UILabel = {
         let lab = UILabel()
+        lab.translatesAutoresizingMaskIntoConstraints = false
         lab.textColor = .black
-        lab.numberOfLines = 2
-        lab.textAlignment = .center
+        lab.numberOfLines = 0
+        lab.textAlignment = .left
         lab.lineBreakMode = .byWordWrapping
         lab.font = .systemFont(ofSize: 14)
-        lab.translatesAutoresizingMaskIntoConstraints = false
         lab.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
+        
+        return lab
+    }()
+    
+    private lazy var dateLab: UILabel = {
+        let lab = UILabel()
+        lab.translatesAutoresizingMaskIntoConstraints = false
+        lab.textColor = .gray
+        lab.numberOfLines = 1
+        lab.textAlignment = .right
+        lab.font = .systemFont(ofSize: 12, weight: .light)
         
         return lab
     }()
@@ -87,7 +106,6 @@ class PhotoCell: UICollectionViewCell {
     
     var info: Photo? {
         didSet {
-            descLab.text = info?.photoDescription
             assignPhoto()
             
             userImg.fadeIn(duration: 0.2)
@@ -96,15 +114,22 @@ class PhotoCell: UICollectionViewCell {
             }
             userLab.text = info?.user.username
             
-            likeLab.attributedText = String.createAttributedString(firstString: "\(info?.likes ?? 0)", secondString: "likes",
-                                                                        firstTextColor: .black, secondTextColor: .lightGray,
-                                                                        firstFont: .systemFont(ofSize: 14, weight: .bold),
-                                                                        secondFont: .systemFont(ofSize: 14, weight: .medium))
+            leftDetailLab.attributedText = String.createAttributedString(firstString: "\(info?.likes ?? 0)", secondString: "Likes",
+                                                                         firstTextColor: .black, secondTextColor: .lightGray,
+                                                                         firstFont: .systemFont(ofSize: 14, weight: .bold),
+                                                                         secondFont: .systemFont(ofSize: 12, weight: .medium))
             
-            collectionsLab.attributedText = String.createAttributedString(firstString: "\(info?.user.id ?? "")", secondString: "id",
-                                                                   firstTextColor: .black, secondTextColor: .lightGray,
-                                                                   firstFont: .systemFont(ofSize: 14, weight: .bold),
-                                                                   secondFont: .systemFont(ofSize: 14, weight: .medium))
+            if let locationStr = info?.user.formatedLocation {
+                rightDetailLab.attributedText = String.createAttributedString(firstString: "\(locationStr)", secondString: "Location",
+                                                                              firstTextColor: .black, secondTextColor: .lightGray,
+                                                                              firstFont: .systemFont(ofSize: 14, weight: .bold),
+                                                                              secondFont: .systemFont(ofSize: 12, weight: .medium))
+            }
+            
+            descLab.text = info?.photoDescription
+            
+            let createdDate = info?.createdAt.convertToDate()
+            dateLab.text = DateFormatter().getFormattedDate(date: createdDate, format: .shortDateShortYearFormatWithHourAndMinutes)
         }
     }
     
@@ -127,13 +152,20 @@ class PhotoCell: UICollectionViewCell {
         layer.cornerRadius = 12
         clipsToBounds = true
         
-        backgroundColor = UIColor("#e4cece")
+        let firstColor = UIColor("#f7f8f9")
+        let secondColor = UIColor("#f3f4f7")
+        addGradient(colors: [firstColor, secondColor], locations: [0, 1], startPoint: CGPoint(x: 0.0, y: 1.5), endPoint: CGPoint(x: 1.0, y: 2.0), type: .axial)
+        
         addSubview(img)
-        addSubview(descLab)
         addSubview(indicator)
         
-        addSubview(likeLab)
-        addSubview(collectionsLab)
+        addSubview(leftDetailLab)
+        addSubview(rightDetailLab)
+        
+        addSubview(separator)
+        addSubview(descLab)
+        
+        addSubview(dateLab)
         
         img.addSubview(userImg)
         img.addSubview(userLab)
@@ -145,21 +177,29 @@ class PhotoCell: UICollectionViewCell {
             img.leadingAnchor.constraint(equalTo: leadingAnchor),
             img.trailingAnchor.constraint(equalTo: trailingAnchor),
             
-            descLab.topAnchor.constraint(equalTo: img.bottomAnchor, constant: 10),
-            descLab.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            descLab.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
-            descLab.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10),
-            descLab.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.3),
-            
             indicator.centerXAnchor.constraint(equalTo: img.centerXAnchor),
             indicator.centerYAnchor.constraint(equalTo: img.centerYAnchor),
             
-            likeLab.topAnchor.constraint(equalTo: img.bottomAnchor, constant: 20),
-            likeLab.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30),
-            likeLab.trailingAnchor.constraint(equalTo: collectionsLab.leadingAnchor, constant: 10),
+            leftDetailLab.topAnchor.constraint(equalTo: img.bottomAnchor, constant: 20),
+            leftDetailLab.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            leftDetailLab.trailingAnchor.constraint(equalTo: rightDetailLab.leadingAnchor, constant: 10),
             
-            collectionsLab.topAnchor.constraint(equalTo: img.bottomAnchor, constant: 20),
-            collectionsLab.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30)
+            rightDetailLab.topAnchor.constraint(equalTo: img.bottomAnchor, constant: 20),
+            rightDetailLab.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            
+            separator.topAnchor.constraint(equalTo: leftDetailLab.bottomAnchor, constant: 10),
+            separator.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            separator.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            separator.heightAnchor.constraint(equalToConstant: 0.5),
+            
+            descLab.topAnchor.constraint(equalTo: separator.bottomAnchor, constant: 10),
+            descLab.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            descLab.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            
+            dateLab.topAnchor.constraint(equalTo: descLab.bottomAnchor, constant: 10),
+            dateLab.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            dateLab.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            dateLab.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20)
         ])
         
         NSLayoutConstraint.activate([
@@ -191,5 +231,8 @@ class PhotoCell: UICollectionViewCell {
    
     override func prepareForReuse() {
         img.image = nil
+        descLab.text = nil
+        
+        layoutSubviews()
     }
 }

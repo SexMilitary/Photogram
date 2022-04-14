@@ -9,8 +9,8 @@ import Foundation
 
 final class PhotoServices {
     
-    func getPhotos(request: PhotoRequest, completion: @escaping (Result<Photos, Error>) -> Void) {
-        let networkManager = NetworkManager<PhotosApi, Photos>()
+    func getPhotos(request: PhotoRequest, completion: @escaping (Result<PhotoResponce, Error>) -> Void) {
+        let networkManager = NetworkManager<PhotosApi, PhotoResponce>()
         networkManager.getRequest(endPoint: .newPhotos(req: request), completion: completion)
     }
     

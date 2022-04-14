@@ -10,7 +10,7 @@ import UIKit
 
 class PhotosCollectionView: UICollectionView {
     
-    var photos: Photos?
+    var photos: PhotoResponce?
     
     init() {
         let layout = CardsCollectionViewLayout()

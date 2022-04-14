@@ -11,7 +11,7 @@ final class MainViewController: UIViewController {
     
     private let photoService = PhotoServices()
     
-    private var viewModel = Photos()
+    private var viewModel = PhotoResponce()
     
     private let photosPageAmount = 30
     
