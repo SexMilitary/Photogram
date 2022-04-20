@@ -8,44 +8,8 @@
 import UIKit
 
 extension UIColor {
-    class var brandTurquoise: UIColor {
-        return UIColor("#0baaed")
-    }
-    
-    class var brandOrange: UIColor {
-        return UIColor("#FD8A00")
-    }
-    
-    class var brandOrangeNew: UIColor {
-        return UIColor("#ff8500")
-    }
-    
-    class var brandOrangeDirty: UIColor {
-        return UIColor("#995513")
-    }
-    
-    class var brandGreen: UIColor {
-        return UIColor("#52D02A")
-    }
-    
-    class var brandGreenNew: UIColor {
-        return UIColor("#00d40a")
-    }
-    
-    class var brandLightGray: UIColor {
-        return UIColor("#EFEFF4")
-    }
-    
-    class var brandGray: UIColor {
-        return UIColor("#919392")
-    }
-    
-    class var brandBlack: UIColor {
-        return UIColor("#1B1B1B")
-    }
-    
-    class var brandBlue: UIColor {
-        return UIColor("#60a8ea")
+    class var background: UIColor? {
+        return UIColor(named: "background")
     }
 }
 

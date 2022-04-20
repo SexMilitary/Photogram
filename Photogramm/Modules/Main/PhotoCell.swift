@@ -187,7 +187,7 @@ class PhotoCell: UICollectionViewCell {
             rightDetailLab.topAnchor.constraint(equalTo: img.bottomAnchor, constant: 20),
             rightDetailLab.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             
-            separator.topAnchor.constraint(equalTo: leftDetailLab.bottomAnchor, constant: 10),
+            separator.topAnchor.constraint(equalTo: img.bottomAnchor, constant: 50),
             separator.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             separator.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             separator.heightAnchor.constraint(equalToConstant: 0.5),

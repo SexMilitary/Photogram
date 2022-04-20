@@ -59,11 +59,6 @@ final class MainViewController: UIViewController {
     }
     
     private func loadPhotos(page: Int, perPage: Int) {
-        
-        checkConnection()
-    }
-    
-    fileprivate func loadPhotos(page: Int, perPage: Int) {
         checkConnection()
         
         let request = PhotoRequest(page: page, perPage: perPage, orderBy: "latest")
