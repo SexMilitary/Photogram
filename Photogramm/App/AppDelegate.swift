@@ -19,6 +19,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.rootViewController = NavigationMenuBaseController()
         window?.makeKeyAndVisible()
         
+        NetworkMonitor.shared.startMonitoring()
+        
         return true
     }
 
