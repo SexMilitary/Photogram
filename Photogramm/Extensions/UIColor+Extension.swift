@@ -8,6 +8,10 @@
 import UIKit
 
 extension UIColor {
+    static let background = UIColor(named: "background")
+}
+
+extension UIColor {
     
     convenience init(_ hex: String, alpha: CGFloat = 1.0) {
         var cString = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()

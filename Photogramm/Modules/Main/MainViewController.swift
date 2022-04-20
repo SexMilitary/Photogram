@@ -28,7 +28,7 @@ final class MainViewController: UIViewController {
         
         title = "Latest photos"
         view = PhotosCollectionView()
-        view.backgroundColor = .white
+        view.backgroundColor = .background
         
         navigationController?.navigationBar.prefersLargeTitles = false
         
