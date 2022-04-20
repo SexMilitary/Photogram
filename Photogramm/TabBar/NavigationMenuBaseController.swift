@@ -47,7 +47,7 @@ class NavigationMenuBaseController: UITabBarController {
             customTabBar.trailingAnchor.constraint(equalTo: tabBar.trailingAnchor, constant: -20),
             customTabBar.widthAnchor.constraint(equalToConstant: tabBar.frame.width),
             customTabBar.heightAnchor.constraint(equalToConstant: tabBarHeight),
-            customTabBar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -5)
+            customTabBar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
         ])
         
         for i in 0 ..< menuItems.count {

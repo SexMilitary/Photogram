@@ -28,10 +28,35 @@ final class MainViewController: UIViewController {
         view = PhotosCollectionView()
         view.backgroundColor = .white
         
-        navigationController?.navigationBar.prefersLargeTitles = false
+        setupNavigationController()
+        setRightBarButton()
     }
     
-    fileprivate func loadPhotos(page: Int, perPage: Int) {
+    private func setupNavigationController() {
+        navigationController?.navigationBar.prefersLargeTitles = false
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.navigationBar.isTranslucent = true
+        navigationController!.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "Helvetica Neue", size: 18)!]
+    }
+    
+    private func setRightBarButton() {
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(named: "FilterIcon")?.withTintColor(.gray, renderingMode: .alwaysOriginal), for: .normal)
+        button.widthAnchor.constraint(equalToConstant: 25).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 25).isActive = true
+        button.addTarget(self, action: #selector(navBtnAction), for: .touchUpInside)
+        let item1 = UIBarButtonItem(customView: button)
+        
+        self.navigationItem.rightBarButtonItem = item1
+    }
+    
+    @objc
+    private func navBtnAction() {
+        
+    }
+    
+    private func loadPhotos(page: Int, perPage: Int) {
         let request = PhotoRequest(page: page, perPage: perPage, orderBy: "latest")
         photoService.getPhotos(request: request) { [weak self] result in
             guard let self = self else { return }

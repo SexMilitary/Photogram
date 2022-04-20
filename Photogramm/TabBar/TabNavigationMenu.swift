@@ -37,6 +37,7 @@ class TabNavigationMenu: UIView {
             itemView.tag = i
             
             addSubview(itemView)
+            
             NSLayoutConstraint.activate([
                 itemView.heightAnchor.constraint(equalTo: heightAnchor),
                 itemView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: leadingAnchor),
