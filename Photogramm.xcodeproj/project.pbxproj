@@ -55,6 +55,9 @@
 		1CF58B4127EF28C30018807A /* MosaicLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF58B4027EF28C30018807A /* MosaicLayout.swift */; };
 		1CF58B5027F08F100018807A /* UIViewContriller+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF58B4F27F08F100018807A /* UIViewContriller+Extension.swift */; };
 		1CF58B5A27F091550018807A /* RowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF58B5927F091550018807A /* RowLayout.swift */; };
+		CEFC861128100B8700A5FD8B /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFC861028100B8700A5FD8B /* NetworkMonitor.swift */; };
+		CEFC861328100C9E00A5FD8B /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFC861228100C9E00A5FD8B /* UIViewController+Extension.swift */; };
+		CEFC861528100E9200A5FD8B /* Error+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFC861428100E9200A5FD8B /* Error+Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -108,6 +111,9 @@
 		1CF58B5527F090710018807A /* SearchCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchCollectionView.swift; sourceTree = "<group>"; };
 		1CF58B5727F090710018807A /* PinterestLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinterestLayout.swift; sourceTree = "<group>"; };
 		1CF58B5927F091550018807A /* RowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowLayout.swift; sourceTree = "<group>"; };
+		CEFC861028100B8700A5FD8B /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
+		CEFC861228100C9E00A5FD8B /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
+		CEFC861428100E9200A5FD8B /* Error+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error+Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -195,6 +201,7 @@
 		1CE97F9B27DE06AD007370C0 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
+				CEFC861028100B8700A5FD8B /* NetworkMonitor.swift */,
 				1CE97FCE27DE30FC007370C0 /* Models */,
 				1CE97FB827DE0C5D007370C0 /* Router */,
 				1CE97FAF27DE0B48007370C0 /* Manager */,
@@ -270,6 +277,8 @@
 			isa = PBXGroup;
 			children = (
 				1CE97FCB27DE2EB5007370C0 /* UIAlertController+Extension.swift */,
+				CEFC861228100C9E00A5FD8B /* UIViewController+Extension.swift */,
+				CEFC861428100E9200A5FD8B /* Error+Extension.swift */,
 				1CF58B4F27F08F100018807A /* UIViewContriller+Extension.swift */,
 				1CDA996027FB889B00B292C6 /* UIView+Extension.swift */,
 				1CDA996427FCD7AC00B292C6 /* UICollectionViewCell+Extension.swift */,
@@ -431,6 +440,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CEFC861328100C9E00A5FD8B /* UIViewController+Extension.swift in Sources */,
 				1C4BE3FA27F23A7A005E6A67 /* SearchViewController.swift in Sources */,
 				1CE97FCC27DE2EB5007370C0 /* UIAlertController+Extension.swift in Sources */,
 				1CE97FD527DE499A007370C0 /* SearchCell.swift in Sources */,
@@ -458,6 +468,7 @@
 				1CE97FB727DE0C58007370C0 /* Router.swift in Sources */,
 				1C4BE42127F244A3005E6A67 /* PhotosEndPoint.swift in Sources */,
 				1CE97FD727DE4B9A007370C0 /* WebImageView.swift in Sources */,
+				CEFC861128100B8700A5FD8B /* NetworkMonitor.swift in Sources */,
 				1CDA995D27F637DA00B292C6 /* LoadingView.swift in Sources */,
 				1CE97F8627DE0343007370C0 /* AppDelegate.swift in Sources */,
 				1CE97FBA27DE0D46007370C0 /* SearchPhotosEndPoint.swift in Sources */,
@@ -467,6 +478,7 @@
 				1C4BE3FB27F23A7E005E6A67 /* SearchCollectionView.swift in Sources */,
 				1CE97FB327DE0B71007370C0 /* NetworkResponse.swift in Sources */,
 				1CDA99672802105500B292C6 /* CardsCollectionViewLayout.swift in Sources */,
+				CEFC861528100E9200A5FD8B /* Error+Extension.swift in Sources */,
 				1CE97FAC27DE09C0007370C0 /* JSONParameterEncoder.swift in Sources */,
 				1CE97FC627DE2BB6007370C0 /* SearchPhotoServices.swift in Sources */,
 				1CE97FCA27DE2C8A007370C0 /* SearchRequest.swift in Sources */,
@@ -617,7 +629,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = UPP28B77QU;
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Photogramm/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -644,7 +656,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = UPP28B77QU;
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Photogramm/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
