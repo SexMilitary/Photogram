@@ -72,3 +72,10 @@ extension UIView {
         self.layer.removeAnimation(forKey: "flash")
     }
 }
+
+extension UIView {
+    func border(_ color: UIColor = UIColor.black.withAlphaComponent(0.05), width: CGFloat = 0.5) {
+        layer.borderColor = color.cgColor
+        layer.borderWidth = width
+    }
+}

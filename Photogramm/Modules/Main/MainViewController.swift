@@ -26,9 +26,21 @@ final class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let collectionView = PhotosCollectionView()
+        collectionView.action = { [weak self] type, cell in
+            guard let self = self else { return }
+            switch type {
+            case .didSelect(index: let index):
+                let model = self.viewModel[index]
+                let detailVC = MainDetailViewController(viewModel: model)
+                self.navigationController?.pushViewController(detailVC, animated: true)
+            }
+        }
+        
         title = "Latest photos"
-        view = PhotosCollectionView()
+        view = collectionView
         view.backgroundColor = .background
+        navigationController?.delegate = self
         
         setupNavigationController()
         setRightBarButton()
@@ -104,6 +116,14 @@ final class MainViewController: UIViewController {
             showConnectionAlert()
         }
     }
-
 }
 
+extension MainViewController: UINavigationControllerDelegate {
+    func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationController.Operation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        
+        let simpleOver = Animator()
+        simpleOver.popStyle = (operation == .pop)
+        
+        return simpleOver
+    }
+}

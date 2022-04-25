@@ -138,6 +138,8 @@ class PhotoCell: UICollectionViewCell {
         
         setupViews()
         setupConstraints()
+        
+        border()
     }
     
     required init?(coder: NSCoder) {
@@ -230,9 +232,9 @@ class PhotoCell: UICollectionViewCell {
     }
    
     override func prepareForReuse() {
+        super.prepareForReuse()
+        
         img.image = nil
         descLab.text = nil
-        
-        layoutSubviews()
     }
 }

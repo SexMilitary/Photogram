@@ -10,6 +10,12 @@ import UIKit
 
 class PhotosCollectionView: UICollectionView {
     
+    enum Action {
+        case didSelect(index: Int)
+    }
+    
+    var action: ((Action, UICollectionViewCell) -> Void)?
+    
     var photos: PhotoResponce?
     
     init() {
@@ -41,6 +47,12 @@ class PhotosCollectionView: UICollectionView {
 extension PhotosCollectionView: UICollectionViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         scrollView.contentOffset.y = 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let cell = collectionView.cellForItem(at: indexPath) {
+            action?(.didSelect(index: indexPath.item), cell)
+        }
     }
 }
 

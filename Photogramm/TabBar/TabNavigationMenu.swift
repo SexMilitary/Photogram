@@ -27,6 +27,8 @@ class TabNavigationMenu: UIView {
         layer.cornerRadius = 12
         clipsToBounds = true
         
+        border()
+        
         for i in 0..<menuItems.count {
             let itemWidth = (frame.width - 40) / CGFloat(menuItems.count)
             let leadingAnchor = itemWidth * CGFloat(i)
