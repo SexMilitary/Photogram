@@ -12,7 +12,7 @@ class WebImageView: UIImageView {
     
     private var currentUrlString:String?
     
-    func set(imageURL: String?, completion: @escaping () -> Void) {
+    func set(imageURL: String?, completion: @escaping (() -> Void) = {}) {
         currentUrlString = imageURL
         
         guard let imageURL = imageURL, let url = URL(string: imageURL) else {

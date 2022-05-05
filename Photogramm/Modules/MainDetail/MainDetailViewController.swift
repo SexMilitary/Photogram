@@ -28,5 +28,6 @@ final class MainDetailViewController: UIViewController {
 private extension MainDetailViewController {
     func setupViews() {
         view.backgroundColor = .background
+        view = DetailPhotoView(viewModel: viewModel)
     }
 }

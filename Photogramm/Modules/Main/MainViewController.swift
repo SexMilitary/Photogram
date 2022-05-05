@@ -52,6 +52,11 @@ final class MainViewController: UIViewController {
         navigationController?.navigationBar.shadowImage = UIImage()
         navigationController?.navigationBar.isTranslucent = true
         navigationController!.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "Helvetica Neue", size: 18)!]
+        
+        let backButton = UIBarButtonItem()
+        backButton.title = ""
+        backButton.tintColor = .white
+        navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
     }
     
     private func setRightBarButton() {
