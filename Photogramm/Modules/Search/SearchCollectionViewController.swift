@@ -14,7 +14,7 @@ protocol SearchCollectionViewDelegate: AnyObject {
     func loadMore(query: String)
 }
 
-class SearchCollectionView: UIView {
+class SearchCollectionViewController: UIViewController {
     
     weak var searchDelegate: SearchCollectionViewDelegate?
     
@@ -63,26 +63,26 @@ class SearchCollectionView: UIView {
     private let spacing: CGFloat = 10.0
     
     init() {
-        super.init(frame: .zero)
+        super.init(nibName: nil, bundle: nil)
         
         layout.delegate = self
         
-        addSubview(collectionView)
+        view.addSubview(collectionView)
         NSLayoutConstraint.activate([
-            collectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            collectionView.topAnchor.constraint(equalTo: topAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            collectionView.topAnchor.constraint(equalTo: view.topAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
         
-        addSubview(loadingView)
+        view.addSubview(loadingView)
         NSLayoutConstraint.activate([
             loadingView.heightAnchor.constraint(equalToConstant: 100),
-            loadingView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            loadingView.trailingAnchor.constraint(equalTo: trailingAnchor)
+            loadingView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            loadingView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
         
-        loaderBottomAnchor = loadingView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor,
+        loaderBottomAnchor = loadingView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor,
                                                                  constant: 0)
         loaderBottomAnchor?.isActive = true
     }
@@ -97,7 +97,7 @@ class SearchCollectionView: UIView {
     }
 }
 
-extension SearchCollectionView: UICollectionViewDataSource {
+extension SearchCollectionViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return findedPhotos.results.count
     }
@@ -110,7 +110,7 @@ extension SearchCollectionView: UICollectionViewDataSource {
     }
 }
 
-extension SearchCollectionView: UICollectionViewDelegate {
+extension SearchCollectionViewController: UICollectionViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let existingCount = findedPhotos.results.count
         let totalCount = findedPhotos.totalPages
@@ -120,8 +120,8 @@ extension SearchCollectionView: UICollectionViewDelegate {
         guard contentHeight != 0 else { return }
         
         let tabBarHeight = searchDelegate?.tabBarHeight ?? 0
-        let buffer = bounds.height - (tabBarHeight + searchBar.frame.height + getStatusBarHeight())
-        let offsetY = scrollView.contentOffset.y + searchBar.frame.height + getStatusBarHeight()
+        let buffer = view.bounds.height - (tabBarHeight + searchBar.frame.height + view.getStatusBarHeight())
+        let offsetY = scrollView.contentOffset.y + searchBar.frame.height + view.getStatusBarHeight()
         
         if (contentHeight * 0.8 < (buffer + offsetY)) && !isLoading {
             isLoading.toggle()
@@ -137,7 +137,7 @@ extension SearchCollectionView: UICollectionViewDelegate {
     }
 }
 
-extension SearchCollectionView: PinterestLayoutDelegate {
+extension SearchCollectionViewController: PinterestLayoutDelegate {
     func collectionView(_ collectionView: UICollectionView, heightForPhotoAtIndexPath indexPath: IndexPath) -> CGFloat {
         guard indexPath.item <= findedPhotos.results.endIndex - 1 else { return 0 }
         let width = (UIScreen.main.bounds.width / 2) - spacing
@@ -146,7 +146,7 @@ extension SearchCollectionView: PinterestLayoutDelegate {
     }
 }
 
-extension SearchCollectionView: UISearchBarDelegate {
+extension SearchCollectionViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         findedPhotos.clear()
         searchDelegate?.searchPhotos(query: searchText)
@@ -157,7 +157,7 @@ extension SearchCollectionView: UISearchBarDelegate {
     }
 }
 
-extension SearchCollectionView: UITextFieldDelegate {
+extension SearchCollectionViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         

@@ -18,7 +18,10 @@ final class MainViewController: UIViewController {
     override func loadView() {
         super.loadView()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(showOfflineDeviceUI(notification:)), name: NSNotification.Name.connectivityStatus, object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(showOfflineDeviceUI(notification:)),
+                                               name: NSNotification.Name.connectivityStatus,
+                                               object: nil)
         
         loadPhotos(page: 1, perPage: photosPageAmount)
     }
@@ -51,7 +54,7 @@ final class MainViewController: UIViewController {
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
         navigationController?.navigationBar.isTranslucent = true
-        navigationController!.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "Helvetica Neue", size: 18)!]
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "Helvetica Neue", size: 18)!]
         
         let backButton = UIBarButtonItem()
         backButton.title = ""

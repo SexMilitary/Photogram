@@ -13,23 +13,30 @@ final class SearchViewController: UIViewController {
     
     private var initialPage = 0
     
-    override func loadView() {
-        super.loadView()
-        
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         title = "Search"
         
-        let collectionView = SearchCollectionView()
+        let collectionView = SearchCollectionViewController()
         collectionView.searchDelegate = self
-        view = collectionView
-        navigationItem.titleView = collectionView.searchBar
         
+        let pageViewController = PageViewController(controllers: [collectionView])
+        
+        add(pageViewController)
+        
+        navigationItem.titleView = collectionView.searchBar
         navigationController?.navigationBar.prefersLargeTitles = false
-        navigationController?.hidesBarsOnSwipe = true
+        
+        if #available(iOS 15, *) {
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithOpaqueBackground()
+            appearance.backgroundColor = .white
+            navigationController?.navigationBar.standardAppearance = appearance;
+            navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
+        } else {
+            navigationController?.navigationBar.backgroundColor = .white
+        }
     }
     
     func search(query: String) {
@@ -40,7 +47,8 @@ final class SearchViewController: UIViewController {
             
             switch result {
             case .success(let data):
-                let collection = self.view as? SearchCollectionView
+                let pageViewController = self.children[0] as? PageViewController
+                let collection = pageViewController?.viewControllers?[0] as? SearchCollectionViewController
                 if collection?.findedPhotos == nil || (collection?.findedPhotos.isEmpty ?? false) {
                     collection?.findedPhotos = data
                 } else {
@@ -52,7 +60,6 @@ final class SearchViewController: UIViewController {
             }
         }
     }
-
 }
 
 extension SearchViewController: SearchCollectionViewDelegate {
