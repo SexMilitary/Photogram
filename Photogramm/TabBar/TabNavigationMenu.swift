@@ -23,7 +23,7 @@ class TabNavigationMenu: UIView {
     convenience init(menuItems: [TabItem], frame: CGRect) {
         self.init(frame: frame)
         
-        layer.backgroundColor = UIColor("#f4f6f8", alpha: 0.95).cgColor
+        layer.backgroundColor = UIColor.tabBarBackground?.cgColor
         layer.cornerRadius = 12
         clipsToBounds = true
         

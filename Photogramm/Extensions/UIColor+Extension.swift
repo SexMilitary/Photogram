@@ -11,6 +11,9 @@ extension UIColor {
     class var background: UIColor? {
         return UIColor(named: "background")
     }
+    class var tabBarBackground: UIColor? {
+        return UIColor(named: "tabBarBackground")
+    }
 }
 
 extension UIColor {

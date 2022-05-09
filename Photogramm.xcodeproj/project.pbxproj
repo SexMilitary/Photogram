@@ -387,7 +387,6 @@
 			children = (
 				1C73DC79282923C900145D1E /* Main */,
 				1CF58B5227F0904B0018807A /* Search */,
-				1C73DC7728290F2C00145D1E /* PageViewController.swift */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -429,6 +428,7 @@
 				1CDA995C27F637DA00B292C6 /* LoadingView.swift */,
 				1CF58B5327F090710018807A /* SearchViewController.swift */,
 				1CF58B5527F090710018807A /* SearchCollectionViewController.swift */,
+				1C73DC7728290F2C00145D1E /* PageViewController.swift */,
 			);
 			path = Search;
 			sourceTree = "<group>";

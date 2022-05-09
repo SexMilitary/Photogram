@@ -16,16 +16,23 @@ final class SearchViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = "Search"
-        
+        setupNavigationController()
+        addSegmenter()
+        addPageViewController()
+    }
+    
+    private func addPageViewController() {
         let collectionView = SearchCollectionViewController()
         collectionView.searchDelegate = self
         
         let pageViewController = PageViewController(controllers: [collectionView])
-        
         add(pageViewController)
         
         navigationItem.titleView = collectionView.searchBar
+    }
+    
+    private func setupNavigationController() {
+        title = "Search"
         navigationController?.navigationBar.prefersLargeTitles = false
         
         if #available(iOS 15, *) {
@@ -36,6 +43,18 @@ final class SearchViewController: UIViewController {
             navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
         } else {
             navigationController?.navigationBar.backgroundColor = .white
+        }
+    }
+    
+    private func addSegmenter() {
+        if let barFrame = navigationController?.navigationBar.frame {
+            let view = UIView()
+            view.backgroundColor = .tabBarBackground
+            view.frame = .init(x: 0,
+                               y: barFrame.height + 10,
+                               width: barFrame.width,
+                               height: 50)
+            navigationController?.navigationBar.addSubview(view)
         }
     }
     
