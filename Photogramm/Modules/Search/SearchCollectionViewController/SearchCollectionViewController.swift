@@ -18,6 +18,8 @@ class SearchCollectionViewController: UIViewController {
     
     weak var searchDelegate: SearchCollectionViewDelegate?
     
+    var number = 0
+    
     private var isLoading = false
     
     var findedPhotos: SearchPhotos = SearchPhotos() {

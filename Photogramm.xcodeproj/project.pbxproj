@@ -430,14 +430,22 @@
 		1CF58B5227F0904B0018807A /* Search */ = {
 			isa = PBXGroup;
 			children = (
-				CEA50388282D34270042A749 /* FilterCollection */,
-				1CE97FD427DE499A007370C0 /* SearchCell.swift */,
-				1CDA995C27F637DA00B292C6 /* LoadingView.swift */,
 				1CF58B5327F090710018807A /* SearchViewController.swift */,
-				1CF58B5527F090710018807A /* SearchCollectionViewController.swift */,
 				1C73DC7728290F2C00145D1E /* PageViewController.swift */,
+				CE80D8D3282D4CC40069897E /* SearchCollectionViewController */,
+				CEA50388282D34270042A749 /* FilterCollection */,
 			);
 			path = Search;
+			sourceTree = "<group>";
+		};
+		CE80D8D3282D4CC40069897E /* SearchCollectionViewController */ = {
+			isa = PBXGroup;
+			children = (
+				1CF58B5527F090710018807A /* SearchCollectionViewController.swift */,
+				1CE97FD427DE499A007370C0 /* SearchCell.swift */,
+				1CDA995C27F637DA00B292C6 /* LoadingView.swift */,
+			);
+			path = SearchCollectionViewController;
 			sourceTree = "<group>";
 		};
 		CEA50388282D34270042A749 /* FilterCollection */ = {

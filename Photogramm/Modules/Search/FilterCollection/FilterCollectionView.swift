@@ -43,6 +43,10 @@ final class FilterCollectionView: UICollectionView {
         self.model = cells
     }
     
+    func select(_ item: Int) {
+        setSelections(self, IndexPath(row: item, section: 0))
+    }
+    
 }
 
 extension FilterCollectionView: UICollectionViewDataSource {
