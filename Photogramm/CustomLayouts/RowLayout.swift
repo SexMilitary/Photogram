@@ -23,7 +23,6 @@ class RowLayout: UICollectionViewLayout {
     
     fileprivate var contentWidth: CGFloat = 0
     
-    // константа
     fileprivate var contentHeight: CGFloat {
         
         guard let collectionView = collectionView else { return 0 }

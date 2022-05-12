@@ -17,8 +17,8 @@ final class SearchViewController: UIViewController {
         super.viewDidLoad()
         
         setupNavigationController()
-        addSegmenter()
         addPageViewController()
+        addSegmenter()
     }
     
     private func addPageViewController() {
@@ -48,13 +48,15 @@ final class SearchViewController: UIViewController {
     
     private func addSegmenter() {
         if let barFrame = navigationController?.navigationBar.frame {
-            let view = UIView()
+            let view = FilterCollectionView()
+            view.actionsDelegate = self
             view.backgroundColor = .tabBarBackground
             view.frame = .init(x: 0,
-                               y: barFrame.height + 10,
+                               y: self.view.safeAreaInsets.top + 105,
                                width: barFrame.width,
                                height: 50)
-            navigationController?.navigationBar.addSubview(view)
+            view.set(cells: ["Photos", "Users", "Groups", "Events", "More", "..."])
+            self.view.addSubview(view)
         }
     }
     
@@ -90,5 +92,11 @@ extension SearchViewController: SearchCollectionViewDelegate {
     }
     func loadMore(query: String) {
         search(query: query)
+    }
+}
+
+extension SearchViewController: FilterCollectionViewDelegate {
+    func didSelectItem(index: Int) {
+        // Set VC, send request
     }
 }

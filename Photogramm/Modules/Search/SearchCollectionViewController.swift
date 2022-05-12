@@ -52,9 +52,9 @@ class SearchCollectionViewController: UIViewController {
         view.dataSource = self
         view.register(SearchCell.self, forCellWithReuseIdentifier: SearchCell.reuseId)
         view.keyboardDismissMode = .onDrag
-        view.contentInset.top = 60
+        view.contentInset.top = 50
         view.contentInset.bottom = 100
-        view.verticalScrollIndicatorInsets.top = 60
+        view.verticalScrollIndicatorInsets.top = 50
         
         return view
     }()
