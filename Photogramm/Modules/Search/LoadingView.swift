@@ -38,6 +38,8 @@ final class LoadingView: UIView {
             loader.widthAnchor.constraint(equalToConstant: 50),
             loader.heightAnchor.constraint(equalToConstant: 50)
         ])
+        
+        isUserInteractionEnabled = false
     }
     
     required init?(coder: NSCoder) {

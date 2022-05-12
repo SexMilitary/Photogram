@@ -8,14 +8,14 @@
 import UIKit
 
 protocol FilterCollectionViewDelegate: AnyObject {
-    func didSelectItem(index: Int)
+    func didSelectItem(model: SearchFilter)
 }
 
 final class FilterCollectionView: UICollectionView {
     
     weak var actionsDelegate: FilterCollectionViewDelegate?
     
-    private var cells = [String]()
+    private var model = SearchFilters()
     
     init() {
         let layout = UICollectionViewFlowLayout()
@@ -39,20 +39,20 @@ final class FilterCollectionView: UICollectionView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func set(cells: [String]) {
-        self.cells = cells
+    func set(cells: SearchFilters) {
+        self.model = cells
     }
     
 }
 
 extension FilterCollectionView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return cells.count
+        return model.filters.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = dequeueReusableCell(withReuseIdentifier: FilterCollectionViewCell.reuseId, for: indexPath) as! FilterCollectionViewCell
-        cell.fill(cells[indexPath.item])
+        cell.fill(model.filters[indexPath.item])
         return cell
     }
 }
@@ -60,7 +60,7 @@ extension FilterCollectionView: UICollectionViewDataSource {
 extension FilterCollectionView: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         setSelections(collectionView, indexPath)
-        actionsDelegate?.didSelectItem(index: indexPath.item)
+        actionsDelegate?.didSelectItem(model: self.model.filters[indexPath.item])
     }
     
     fileprivate func setSelections(_ collectionView: UICollectionView, _ indexPath: IndexPath) {
@@ -69,10 +69,11 @@ extension FilterCollectionView: UICollectionViewDelegate {
             let previosSelectedCell = filerCells.first(where: { $0.isSelect })
             previosSelectedCell?.select(false)
         }
-        
+        model.filters.first(where: { $0.isSelect })?.isSelect.toggle()
         /// Select
         let cell = collectionView.cellForItem(at: indexPath) as! FilterCollectionViewCell
         cell.select(true)
+        model.filters[indexPath.item].isSelect.toggle()
     }
 }
 

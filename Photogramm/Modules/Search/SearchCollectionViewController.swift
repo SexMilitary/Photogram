@@ -79,7 +79,7 @@ class SearchCollectionViewController: UIViewController {
         
         view.addSubview(loadingView)
         NSLayoutConstraint.activate([
-            loadingView.heightAnchor.constraint(equalToConstant: 100),
+            loadingView.heightAnchor.constraint(equalToConstant: 250),
             loadingView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             loadingView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])

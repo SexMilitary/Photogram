@@ -55,7 +55,7 @@ final class SearchViewController: UIViewController {
                                y: self.view.safeAreaInsets.top + 105,
                                width: barFrame.width,
                                height: 50)
-            view.set(cells: ["Photos", "Users", "Groups", "Events", "More", "..."])
+            view.set(cells: SearchFilters())
             self.view.addSubview(view)
         }
     }
@@ -96,7 +96,7 @@ extension SearchViewController: SearchCollectionViewDelegate {
 }
 
 extension SearchViewController: FilterCollectionViewDelegate {
-    func didSelectItem(index: Int) {
-        // Set VC, send request
+    func didSelectItem(model: SearchFilter) {
+        print(model.title)
     }
 }
