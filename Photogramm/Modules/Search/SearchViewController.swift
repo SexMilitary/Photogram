@@ -19,10 +19,7 @@ final class SearchViewController: UIViewController {
         let view = FilterCollectionView()
         view.actionsDelegate = self
         view.backgroundColor = .tabBarBackground
-        view.frame = .init(x: 0,
-                           y: self.view.safeAreaInsets.top + 105,
-                           width: UIScreen.main.bounds.width,
-                           height: 50)
+        view.translatesAutoresizingMaskIntoConstraints = false
         view.set(cells: SearchFilters())
         
         return view
@@ -40,12 +37,21 @@ final class SearchViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupNavigationController()
-        
         addMockScreensPageViewController()
-        add(pageViewController)
         
+        setupNavigationController()
+        add(pageViewController)
+        setupFilterView()
+    }
+    
+    private func setupFilterView() {
         view.addSubview(filterView)
+        NSLayoutConstraint.activate([
+            filterView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
+            filterView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            filterView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            filterView.heightAnchor.constraint(equalToConstant: 50)
+        ])
     }
     
     private func addMockScreensPageViewController() {
