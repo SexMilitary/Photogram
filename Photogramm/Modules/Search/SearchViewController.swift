@@ -13,6 +13,8 @@ final class SearchViewController: UIViewController {
     
     private var initialPage = 0
     
+    private var pagesControllers = [SearchCollectionViewController]()
+    
     private lazy var filterView: FilterCollectionView = {
         let view = FilterCollectionView()
         view.actionsDelegate = self
@@ -26,28 +28,47 @@ final class SearchViewController: UIViewController {
         return view
     }()
     
+    private lazy var pageViewController: PageViewController = {
+        let pageViewController = PageViewController(controllers: pagesControllers, currentNumber: 0)
+        pageViewController.delegateAction = self
+        
+        navigationItem.titleView = pagesControllers.first?.searchBar
+        
+        return pageViewController
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupNavigationController()
-        addPageViewController()
-        addSegmenter()
+        
+        addMockScreensPageViewController()
+        add(pageViewController)
+        
+        view.addSubview(filterView)
     }
     
-    private func addPageViewController() {
+    private func addMockScreensPageViewController() {
         let collectionViewController = SearchCollectionViewController()
-        collectionViewController.searchDelegate = self
         collectionViewController.number = 0
         
         let collectionViewController2 = SearchCollectionViewController()
-        collectionViewController2.searchDelegate = self
         collectionViewController2.number = 1
         
-        let pageViewController = PageViewController(controllers: [collectionViewController, collectionViewController2])
-        pageViewController.delegate = self
-        add(pageViewController)
+        let collectionViewController3 = SearchCollectionViewController()
+        collectionViewController3.number = 2
         
-        navigationItem.titleView = collectionViewController.searchBar
+        let collectionViewController4 = SearchCollectionViewController()
+        collectionViewController4.number = 3
+        
+        let collectionViewController5 = SearchCollectionViewController()
+        collectionViewController5.number = 4
+        
+        pagesControllers.append(contentsOf: [collectionViewController, collectionViewController2, collectionViewController3, collectionViewController4, collectionViewController5])
+        
+        pagesControllers.forEach { vc in
+            vc.searchDelegate = self
+        }
     }
     
     private func setupNavigationController() {
@@ -65,10 +86,6 @@ final class SearchViewController: UIViewController {
         }
     }
     
-    private func addSegmenter() {
-        self.view.addSubview(filterView)
-    }
-    
     func search(query: String) {
         let request = SearchPhotoRequest(page: initialPage, query: query)
         photoService.searchPhotos(request: request) { [weak self] result in
@@ -84,7 +101,6 @@ final class SearchViewController: UIViewController {
                 } else {
                     collection?.findedPhotos.results.append(contentsOf: data.results)
                 }
-                
             case .failure(let error):
                 UIAlertController.alert(title: "Warning", msg: error.localizedDescription, target: self)
             }
@@ -106,14 +122,12 @@ extension SearchViewController: SearchCollectionViewDelegate {
 
 extension SearchViewController: FilterCollectionViewDelegate {
     func didSelectItem(model: SearchFilter) {
-        print(model.title)
+        pageViewController.selectControllerOf(number: model.type.rawValue)
     }
 }
 
-extension SearchViewController: UIPageViewControllerDelegate {
-    func pageViewController(_ pageViewController: UIPageViewController, willTransitionTo pendingViewControllers: [UIViewController]) {
-        // send command, prepare VC
-        let vc = pendingViewControllers.first as? SearchCollectionViewController
-        filterView.select(vc?.number ?? 0)
+extension SearchViewController: PageViewControllerProtocol {
+    func didTransitionToController(of number: Int) {
+        filterView.select(number)
     }
 }

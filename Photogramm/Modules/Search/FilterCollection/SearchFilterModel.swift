@@ -12,7 +12,7 @@ class SearchFilters {
 }
 
 class SearchFilter {
-    enum Filter: String, CaseIterable {
+    enum Filter: Int, CaseIterable {
         case photos
         case collections
         case users
@@ -20,7 +20,18 @@ class SearchFilter {
         case avatars
         
         var title: String {
-            self.rawValue.capitalized
+            switch self {
+            case .photos:
+                return "photos".capitalized
+            case .collections:
+                return "collections".capitalized
+            case .users:
+                return "users".capitalized
+            case .wallpapers:
+                return "wallpapers".capitalized
+            case .avatars:
+                return "avatars".capitalized
+            }
         }
         
         var isSelected: Bool {

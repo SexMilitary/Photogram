@@ -75,9 +75,10 @@ extension FilterCollectionView: UICollectionViewDelegate {
         }
         model.filters.first(where: { $0.isSelect })?.isSelect.toggle()
         /// Select
-        let cell = collectionView.cellForItem(at: indexPath) as! FilterCollectionViewCell
-        cell.select(true)
-        model.filters[indexPath.item].isSelect.toggle()
+        if let cell = collectionView.cellForItem(at: indexPath) as? FilterCollectionViewCell {
+            cell.select(true)
+            model.filters[indexPath.item].isSelect.toggle()
+        }
     }
 }
 
