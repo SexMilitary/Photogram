@@ -67,18 +67,66 @@ extension FilterCollectionView: UICollectionViewDelegate {
         actionsDelegate?.didSelectItem(model: self.model.filters[indexPath.item])
     }
     
-    fileprivate func setSelections(_ collectionView: UICollectionView, _ indexPath: IndexPath) {
-        /// Deselect
+    private func setSelections(_ collectionView: UICollectionView, _ indexPath: IndexPath) {
+        performDeselected(collectionView)
+        performSelected(collectionView, indexPath)
+        scrollIfCellHidden(collectionView: collectionView, indexPath: indexPath)
+    }
+    
+    private func performDeselected(_ collectionView: UICollectionView) {
         if let filerCells = collectionView.subviews as? [FilterCollectionViewCell] {
             let previosSelectedCell = filerCells.first(where: { $0.isSelect })
             previosSelectedCell?.select(false)
         }
+        /// Deselect model item
         model.filters.first(where: { $0.isSelect })?.isSelect.toggle()
-        /// Select
-        if let cell = collectionView.cellForItem(at: indexPath) as? FilterCollectionViewCell {
-            cell.select(true)
-            model.filters[indexPath.item].isSelect.toggle()
+    }
+    
+    private func performSelected(_ collectionView: UICollectionView, _ indexPath: IndexPath) {
+        guard let cell = collectionView.cellForItem(at: indexPath) as? FilterCollectionViewCell else { return }
+        cell.select(true)
+        /// Select model item
+        model.filters[indexPath.item].isSelect.toggle()
+    }
+    
+    private func scrollIfCellHidden(collectionView: UICollectionView, indexPath: IndexPath) {
+        guard let cell = collectionView.cellForItem(at: indexPath) as? FilterCollectionViewCell else { return }
+        
+        let visibility = isVisible(cell: cell, on: collectionView)
+        if !visibility.isVisible {
+            let xOffset = visibility.necesseryOffset
+            collectionView.setContentOffset(CGPoint(x: xOffset, y: 0), animated: true)
         }
+    }
+    
+    private func isVisible(cell: FilterCollectionViewCell, on collectionView: UICollectionView) -> (isVisible: Bool, necesseryOffset: CGFloat) {
+        let leftInset = collectionView.contentInset.left
+        let cellWidth = cell.frame.width
+        let cellX = cell.frame.origin.x
+        let offsetXPosition = collectionView.contentOffset.x + leftInset
+        let screenWidth = UIScreen.main.bounds.width
+        
+        let isVisibleFromLeft = offsetXPosition <= cellX
+        if !isVisibleFromLeft {
+            let hiddenCellWidth = offsetXPosition - cellX
+            let necesseryOffset = offsetXPosition - hiddenCellWidth - leftInset
+            
+            return (isVisible: false, necesseryOffset: necesseryOffset)
+        }
+        
+        let cellMaxY = cellX + cellWidth
+        let contentMaxVisibleY = offsetXPosition + screenWidth
+        let isVisibleFromRight = cellMaxY <= contentMaxVisibleY
+        
+        if !isVisibleFromRight {
+            let visibleCellWidth = contentMaxVisibleY - cellX
+            let hiddenCellWidth = cellWidth - visibleCellWidth
+            let necesseryOffset = offsetXPosition + hiddenCellWidth + leftInset
+            
+            return (isVisible: false, necesseryOffset: necesseryOffset)
+        }
+        
+        return (isVisible: true, necesseryOffset: 0)
     }
 }
 
