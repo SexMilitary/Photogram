@@ -10,8 +10,8 @@ import UIKit
 
 protocol SearchCollectionViewDelegate: AnyObject {
     var tabBarHeight: CGFloat { get }
-    func searchPhotos(query: String)
-    func loadMore(query: String)
+    func searchPhotos()
+    func loadMore()
 }
 
 class SearchCollectionViewController: UIViewController {
@@ -30,20 +30,6 @@ class SearchCollectionViewController: UIViewController {
             loadingView.stop()
         }
     }
-    
-    lazy var searchBar: UISearchBar = {
-        let bar = UISearchBar()
-        bar.placeholder = "Search..."
-        bar.searchBarStyle = .minimal
-        bar.sizeToFit()
-        bar.isTranslucent = false
-        bar.backgroundImage = UIImage()
-        bar.delegate = self
-        bar.searchTextField.delegate = self
-        bar.searchTextField.returnKeyType = .done
-        
-        return bar
-    }()
     
     private var layout = PinterestLayout()
     
@@ -95,7 +81,7 @@ class SearchCollectionViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func reloadCollection() {
+    func reloadCollection() {
         layout.prepare()
         collectionView.reloadData()
     }
@@ -118,18 +104,18 @@ extension SearchCollectionViewController: UICollectionViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let existingCount = findedPhotos.results.count
         let totalCount = findedPhotos.totalPages
-        guard existingCount < totalCount, let searchText = searchBar.text else { return }
+        guard existingCount < totalCount else { return }
         
         let contentHeight = scrollView.contentSize.height
         guard contentHeight != 0 else { return }
         
         let tabBarHeight = searchDelegate?.tabBarHeight ?? 0
-        let buffer = view.bounds.height - (tabBarHeight + searchBar.frame.height + view.getStatusBarHeight())
-        let offsetY = scrollView.contentOffset.y + searchBar.frame.height + view.getStatusBarHeight()
+        let buffer = view.bounds.height - (tabBarHeight + view.getStatusBarHeight())
+        let offsetY = scrollView.contentOffset.y + view.getStatusBarHeight()
         
         if (contentHeight * 0.8 < (buffer + offsetY)) && !isLoading {
             isLoading.toggle()
-            searchDelegate?.loadMore(query: searchText)
+            searchDelegate?.loadMore()
             
             loadingView.layoutSubviewsAnimated()
             loadingView.start()
@@ -137,7 +123,7 @@ extension SearchCollectionViewController: UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        searchBar.searchTextField.resignFirstResponder()
+        
     }
 }
 
@@ -147,24 +133,5 @@ extension SearchCollectionViewController: PinterestLayoutDelegate {
         let width = (UIScreen.main.bounds.width / 2) - spacing
         
         return width / findedPhotos.results[indexPath.item].ratio
-    }
-}
-
-extension SearchCollectionViewController: UISearchBarDelegate {
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        findedPhotos.clear()
-        searchDelegate?.searchPhotos(query: searchText)
-    }
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        findedPhotos.clear()
-        reloadCollection()
-    }
-}
-
-extension SearchCollectionViewController: UITextFieldDelegate {
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        
-        return true
     }
 }

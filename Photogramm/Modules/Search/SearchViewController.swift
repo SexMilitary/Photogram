@@ -29,10 +29,30 @@ final class SearchViewController: UIViewController {
         let pageViewController = PageViewController(controllers: pagesControllers, currentNumber: 0)
         pageViewController.delegateAction = self
         
-        navigationItem.titleView = pagesControllers.first?.searchBar
-        
         return pageViewController
     }()
+    
+    private lazy var searchBar: UISearchBar = {
+        let bar = UISearchBar()
+        bar.placeholder = "Search..."
+        bar.searchBarStyle = .minimal
+        bar.sizeToFit()
+        bar.isTranslucent = false
+        bar.backgroundImage = UIImage()
+        bar.delegate = self
+        bar.searchTextField.delegate = self
+        bar.searchTextField.returnKeyType = .done
+        
+        return bar
+    }()
+    
+    private var searchBarText: String {
+        searchBar.text ?? ""
+    }
+    
+    private var showingViewController: SearchCollectionViewController? {
+        pageViewController.viewControllers?[0] as? SearchCollectionViewController
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -81,6 +101,8 @@ final class SearchViewController: UIViewController {
         title = "Search"
         navigationController?.navigationBar.prefersLargeTitles = false
         
+        navigationItem.titleView = searchBar
+        
         if #available(iOS 15, *) {
             let appearance = UINavigationBarAppearance()
             appearance.configureWithOpaqueBackground()
@@ -118,11 +140,11 @@ extension SearchViewController: SearchCollectionViewDelegate {
     var tabBarHeight: CGFloat {
         tabBarController?.tabBar.intrinsicContentSize.height ?? 0
     }
-    func searchPhotos(query: String) {
-        search(query: query)
+    func searchPhotos() {
+        search(query: searchBarText)
     }
-    func loadMore(query: String) {
-        search(query: query)
+    func loadMore() {
+        search(query: searchBarText)
     }
 }
 
@@ -135,5 +157,23 @@ extension SearchViewController: FilterCollectionViewDelegate {
 extension SearchViewController: PageViewControllerProtocol {
     func didTransitionToController(of number: Int) {
         filterView.select(number)
+    }
+}
+
+extension SearchViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        showingViewController?.findedPhotos.clear()
+        search(query: searchBarText)
+    }
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        showingViewController?.findedPhotos.clear()
+        showingViewController?.reloadCollection()
+    }
+}
+
+extension SearchViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }
