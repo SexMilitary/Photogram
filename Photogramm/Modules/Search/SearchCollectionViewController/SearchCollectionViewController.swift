@@ -24,7 +24,7 @@ class SearchCollectionViewController: UIViewController, PageableController {
     
     var findedPhotos: SearchPhotos = SearchPhotos() {
         didSet {
-            isLoading.toggle()
+            isLoading = false
             reloadCollection()
             
             loadingView.stop()
@@ -115,7 +115,7 @@ extension SearchCollectionViewController: UICollectionViewDelegate {
         let offsetY = scrollView.contentOffset.y + view.getStatusBarHeight()
         
         if (contentHeight * 0.8 < (buffer + offsetY)) && !isLoading {
-            isLoading.toggle()
+            isLoading = true
             searchDelegate?.loadMore()
             
             loadingView.layoutSubviewsAnimated()

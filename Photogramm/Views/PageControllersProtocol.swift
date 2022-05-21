@@ -10,7 +10,8 @@ import UIKit
 protocol PageControllersProtocol {
     var viewController: PageableController { get set }
     var number: Int { get set }
-    var lastSearchText: String? { get set }
+    var lastSearchText: String { get set }
+    var initialPage: Int { get set }
 }
 
 protocol PageableController: UIViewController {

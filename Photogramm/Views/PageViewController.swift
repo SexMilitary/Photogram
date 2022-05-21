@@ -16,7 +16,7 @@ final class PageViewController: UIPageViewController {
     weak var delegateAction: PageViewControllerProtocol?
     
     private var controllers: [PageControllersProtocol]
-    private var currentNumber: Int
+    private(set) var currentNumber: Int
     
     init(controllers: [PageControllersProtocol], currentNumber: Int) {
         self.controllers = controllers

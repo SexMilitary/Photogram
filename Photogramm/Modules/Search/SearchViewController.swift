@@ -11,8 +11,6 @@ final class SearchViewController: UIViewController {
     
     private let photoService = SearchPhotoServices()
     
-    private var initialPage = 0
-    
     private var pagesControllers = [SearchViewControllerModel]()
     
     private lazy var filterView: FilterCollectionView = {
@@ -110,16 +108,16 @@ private extension SearchViewController {
 
 private extension SearchViewController {
     func search(query: String) {
-        let request = SearchPhotoRequest(page: initialPage, query: query)
+        let currentNumber = pageViewController.currentNumber
+        let request = SearchPhotoRequest(page: pagesControllers[currentNumber].initialPage, query: query)
         photoService.searchPhotos(request: request) { [weak self] result in
             guard let self = self else { return }
-            self.initialPage += 1
+            self.pagesControllers[currentNumber].initialPage += 1
+            self.pagesControllers[self.pageViewController.currentNumber].lastSearchText = query
             
             switch result {
             case .success(let data):
-                let pageViewController = self.children[0] as? PageViewController
-                
-                let collectionVC = pageViewController?.viewControllers?.first as? SearchCollectionViewController
+                let collectionVC = self.pageViewController.viewControllers?.first as? SearchCollectionViewController
                 if collectionVC?.findedPhotos == nil || (collectionVC?.findedPhotos.isEmpty ?? false) {
                     collectionVC?.findedPhotos = data
                 } else {
@@ -132,8 +130,10 @@ private extension SearchViewController {
     }
     
     func searchByBarText() {
+        let lastSearchText = pagesControllers[pageViewController.currentNumber].lastSearchText
+        
         guard let searchString = (navigationItem.titleView as? UISearchBar)?.text,
-              !searchString.isEmpty
+              !searchString.isEmpty && searchString != lastSearchText
         else { return }
         
         search(query: searchString)

@@ -10,5 +10,6 @@ import UIKit
 struct SearchViewControllerModel: PageControllersProtocol {
     var viewController: PageableController
     var number: Int
-    var lastSearchText: String?
+    var lastSearchText: String = ""
+    var initialPage: Int = 0
 }
