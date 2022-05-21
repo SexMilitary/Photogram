@@ -14,11 +14,11 @@ protocol SearchCollectionViewDelegate: AnyObject {
     func loadMore()
 }
 
-class SearchCollectionViewController: UIViewController {
+class SearchCollectionViewController: UIViewController, PageableController {
     
     weak var searchDelegate: SearchCollectionViewDelegate?
     
-    var number = 0
+    internal var number: Int
     
     private var isLoading = false
     
@@ -52,7 +52,8 @@ class SearchCollectionViewController: UIViewController {
     
     private let spacing: CGFloat = 10.0
     
-    init() {
+    init(number: Int) {
+        self.number = number
         super.init(nibName: nil, bundle: nil)
         
         layout.delegate = self

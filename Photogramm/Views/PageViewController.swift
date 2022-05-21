@@ -15,10 +15,10 @@ final class PageViewController: UIPageViewController {
     
     weak var delegateAction: PageViewControllerProtocol?
     
-    private var controllers: [UIViewController]
+    private var controllers: [PageControllersProtocol]
     private var currentNumber: Int
     
-    init(controllers: [UIViewController], currentNumber: Int) {
+    init(controllers: [PageControllersProtocol], currentNumber: Int) {
         self.controllers = controllers
         self.currentNumber = currentNumber
         super.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
@@ -26,7 +26,7 @@ final class PageViewController: UIPageViewController {
         dataSource = self
         delegate = self
         
-        setViewControllers([controllers[0]],
+        setViewControllers([controllers[0].viewController],
                            direction: .forward,
                            animated: false)
     }
@@ -44,7 +44,7 @@ final class PageViewController: UIPageViewController {
     func selectControllerOf(number: Int) {
         let direction: UIPageViewController.NavigationDirection = number > currentNumber ? .forward : .reverse
         currentNumber = number
-        setViewControllers([controllers[number]], direction: direction, animated: true)
+        setViewControllers([controllers[number].viewController], direction: direction, animated: true)
     }
     
 }
@@ -52,13 +52,17 @@ final class PageViewController: UIPageViewController {
 extension PageViewController: UIPageViewControllerDataSource {
     /// Previos Page
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        guard let index = controllers.firstIndex(of: viewController), index > 0 else { return nil }
-        return controllers[index - 1]
+        guard let index = controllers.firstIndex(where: { $0.viewController == viewController}),
+              index > 0
+        else { return nil }
+        return controllers[index - 1].viewController
     }
     /// Next Page
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        guard let index = controllers.firstIndex(of: viewController), index < controllers.count - 1 else { return nil }
-        return controllers[index + 1]
+        guard let index = controllers.firstIndex(where: { $0.viewController == viewController}),
+              index < controllers.count - 1
+        else { return nil }
+        return controllers[index + 1].viewController
     }
 }
 

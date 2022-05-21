@@ -13,7 +13,7 @@ final class SearchViewController: UIViewController {
     
     private var initialPage = 0
     
-    private var pagesControllers = [SearchCollectionViewController]()
+    private var pagesControllers = [SearchViewControllerModel]()
     
     private lazy var filterView: FilterCollectionView = {
         let view = FilterCollectionView()
@@ -63,41 +63,24 @@ final class SearchViewController: UIViewController {
         add(pageViewController)
         setupFilterView()
     }
-    
-    private func setupFilterView() {
-        view.addSubview(filterView)
-        NSLayoutConstraint.activate([
-            filterView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
-            filterView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            filterView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            filterView.heightAnchor.constraint(equalToConstant: 50)
-        ])
-    }
-    
-    private func addMockScreensPageViewController() {
-        let collectionViewController = SearchCollectionViewController()
-        collectionViewController.number = 0
+}
+
+// MARK: - Setup Views
+private extension SearchViewController {
+    func addMockScreensPageViewController() {
+        for i in 0...5 {
+            let page = SearchViewControllerModel(viewController: SearchCollectionViewController(number: i), number: i)
+            pagesControllers.append(page)
+        }
         
-        let collectionViewController2 = SearchCollectionViewController()
-        collectionViewController2.number = 1
-        
-        let collectionViewController3 = SearchCollectionViewController()
-        collectionViewController3.number = 2
-        
-        let collectionViewController4 = SearchCollectionViewController()
-        collectionViewController4.number = 3
-        
-        let collectionViewController5 = SearchCollectionViewController()
-        collectionViewController5.number = 4
-        
-        pagesControllers.append(contentsOf: [collectionViewController, collectionViewController2, collectionViewController3, collectionViewController4, collectionViewController5])
-        
-        pagesControllers.forEach { vc in
-            vc.searchDelegate = self
+        pagesControllers.forEach { page in
+            if let searchController = page.viewController as? SearchCollectionViewController {
+                searchController.searchDelegate = self
+            }
         }
     }
     
-    private func setupNavigationController() {
+    func setupNavigationController() {
         title = "Search"
         navigationController?.navigationBar.prefersLargeTitles = false
         
@@ -107,13 +90,25 @@ final class SearchViewController: UIViewController {
             let appearance = UINavigationBarAppearance()
             appearance.configureWithOpaqueBackground()
             appearance.backgroundColor = .white
-            navigationController?.navigationBar.standardAppearance = appearance;
+            navigationController?.navigationBar.standardAppearance = appearance
             navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
         } else {
             navigationController?.navigationBar.backgroundColor = .white
         }
     }
     
+    func setupFilterView() {
+        view.addSubview(filterView)
+        NSLayoutConstraint.activate([
+            filterView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
+            filterView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            filterView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            filterView.heightAnchor.constraint(equalToConstant: 50)
+        ])
+    }
+}
+
+private extension SearchViewController {
     func search(query: String) {
         let request = SearchPhotoRequest(page: initialPage, query: query)
         photoService.searchPhotos(request: request) { [weak self] result in
@@ -123,15 +118,32 @@ final class SearchViewController: UIViewController {
             switch result {
             case .success(let data):
                 let pageViewController = self.children[0] as? PageViewController
-                let collection = pageViewController?.viewControllers?[0] as? SearchCollectionViewController
-                if collection?.findedPhotos == nil || (collection?.findedPhotos.isEmpty ?? false) {
-                    collection?.findedPhotos = data
+                
+                let collectionVC = pageViewController?.viewControllers?.first as? SearchCollectionViewController
+                if collectionVC?.findedPhotos == nil || (collectionVC?.findedPhotos.isEmpty ?? false) {
+                    collectionVC?.findedPhotos = data
                 } else {
-                    collection?.findedPhotos.results.append(contentsOf: data.results)
+                    collectionVC?.findedPhotos.results.append(contentsOf: data.results)
                 }
             case .failure(let error):
                 UIAlertController.alert(title: "Warning", msg: error.localizedDescription, target: self)
             }
+        }
+    }
+    
+    func searchByBarText() {
+        guard let searchString = (navigationItem.titleView as? UISearchBar)?.text,
+              !searchString.isEmpty
+        else { return }
+        
+        search(query: searchString)
+    }
+    
+    func clearAllPages() {
+        pagesControllers.forEach { page in
+            guard let searchController = page.viewController as? SearchCollectionViewController else { return }
+            searchController.findedPhotos.clear()
+            searchController.reloadCollection()
         }
     }
 }
@@ -151,23 +163,26 @@ extension SearchViewController: SearchCollectionViewDelegate {
 extension SearchViewController: FilterCollectionViewDelegate {
     func didSelectItem(model: SearchFilter) {
         pageViewController.selectControllerOf(number: model.type.rawValue)
+        searchByBarText()
     }
 }
 
 extension SearchViewController: PageViewControllerProtocol {
     func didTransitionToController(of number: Int) {
         filterView.select(number)
+        searchByBarText()
     }
 }
 
 extension SearchViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        guard !searchText.isEmpty else {
+            clearAllPages()
+            return
+        }
+        
         showingViewController?.findedPhotos.clear()
         search(query: searchBarText)
-    }
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        showingViewController?.findedPhotos.clear()
-        showingViewController?.reloadCollection()
     }
 }
 
