@@ -15,7 +15,9 @@ final class FilterCollectionView: UICollectionView {
     
     weak var actionsDelegate: FilterCollectionViewDelegate?
     
-    private var model = SearchFilters()
+    private(set) var model = SearchFilters()
+    
+    private let padding: CGFloat = 10
     
     init() {
         let layout = UICollectionViewFlowLayout()
@@ -28,8 +30,8 @@ final class FilterCollectionView: UICollectionView {
         register(FilterCollectionViewCell.self, forCellWithReuseIdentifier: FilterCollectionViewCell.reuseId)
         
         translatesAutoresizingMaskIntoConstraints = false
-        layout.minimumLineSpacing = 10
-        contentInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+        layout.minimumLineSpacing = padding
+        contentInset = UIEdgeInsets(top: 0, left: padding, bottom: 0, right: padding)
         
         showsHorizontalScrollIndicator = false
         showsVerticalScrollIndicator = false
@@ -44,7 +46,8 @@ final class FilterCollectionView: UICollectionView {
     }
     
     func select(_ item: Int) {
-        setSelections(self, IndexPath(row: item, section: 0))
+        model.selectedIndex = item
+        selectionProcess(self, IndexPath(row: item, section: 0))
     }
     
 }
@@ -63,11 +66,12 @@ extension FilterCollectionView: UICollectionViewDataSource {
 
 extension FilterCollectionView: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        setSelections(collectionView, indexPath)
+        model.selectedIndex = indexPath.item
+        selectionProcess(collectionView, indexPath)
         actionsDelegate?.didSelectItem(model: self.model.filters[indexPath.item])
     }
     
-    private func setSelections(_ collectionView: UICollectionView, _ indexPath: IndexPath) {
+    private func selectionProcess(_ collectionView: UICollectionView, _ indexPath: IndexPath) {
         performDeselected(collectionView)
         performSelected(collectionView, indexPath)
         scrollIfCellHidden(collectionView: collectionView, indexPath: indexPath)
@@ -132,6 +136,9 @@ extension FilterCollectionView: UICollectionViewDelegate {
 
 extension FilterCollectionView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 100, height: 40)
+        let screenWidth = UIScreen.main.bounds.width - padding * 2
+        let itemWidth = screenWidth / 4
+        
+        return CGSize(width: itemWidth, height: 40)
     }
 }

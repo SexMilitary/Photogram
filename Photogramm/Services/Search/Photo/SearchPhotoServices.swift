@@ -14,4 +14,8 @@ final class SearchPhotoServices {
         networkManager.getRequest(endPoint: .searchPhoto(req: request), completion: completion)
     }
     
+    func searchCollections(request: SearchCollectionsRequest, completion: @escaping (Result<SearchCollections, Error>) -> Void) {
+        let networkManager = NetworkManager<SearchPhotosApi, SearchCollections>()
+        networkManager.getRequest(endPoint: .searchCollections(req: request), completion: completion)
+    }
 }

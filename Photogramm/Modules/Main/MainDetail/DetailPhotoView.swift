@@ -36,6 +36,7 @@ final class DetailPhotoView: UIView {
         self.viewModel = viewModel
         
         super.init(frame: .zero)
+        backgroundColor = .appBackgroundColor
         
         setupViews()
     }

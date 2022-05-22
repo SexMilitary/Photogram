@@ -14,7 +14,7 @@ protocol RowLayoutDelegate: AnyObject {
 
 class RowLayout: UICollectionViewLayout {
     
-    weak var delegate: RowLayoutDelegate!
+    weak var delegate: RowLayoutDelegate?
     
     static var numbersOfRows = 2
     fileprivate var cellPadding: CGFloat = 8
@@ -43,7 +43,7 @@ class RowLayout: UICollectionViewLayout {
         var photos = [CGSize]()
         for item in 0 ..< collectionView.numberOfItems(inSection: 0) {
             let indexPath = IndexPath(item: item, section: 0)
-            let photoSize = delegate.collectionView(collectionView, photoAtIndexPath: indexPath)
+            guard let photoSize = delegate?.collectionView(collectionView, photoAtIndexPath: indexPath) else { return }
             photos.append(photoSize)
         }
         

@@ -9,6 +9,7 @@ import Foundation
 
 enum SearchPhotosApi {
     case searchPhoto(req: SearchPhotoRequest)
+    case searchCollections(req: SearchCollectionsRequest)
 }
 
 extension SearchPhotosApi: EndPointType {
@@ -30,6 +31,8 @@ extension SearchPhotosApi: EndPointType {
         switch self {
         case .searchPhoto:
             return "/search/photos"
+        case .searchCollections:
+            return "/search/collections"
         }
     }
     
@@ -39,11 +42,18 @@ extension SearchPhotosApi: EndPointType {
     
     var task: HTTPTask {
         switch self {
-        case let .searchPhoto(request):
+        case .searchPhoto(let request):
             return .requestParameters(bodyParameters: nil,
                                       bodyEncoding: .urlEncoding,
                                       urlParameters: ["page" : "\(request.page)",
                                                       "query" : "\(request.query)"]
+            )
+        case .searchCollections(let request):
+            return .requestParameters(bodyParameters: nil,
+                                      bodyEncoding: .urlEncoding,
+                                      urlParameters: ["page" : "\(request.page)",
+                                                      "query" : "\(request.query)",
+                                                      "per_page" : "\(request.perPage)"]
             )
         }
     }

@@ -12,4 +12,8 @@ struct SearchViewControllerModel: PageControllersProtocol {
     var number: Int
     var lastSearchText: String = ""
     var initialPage: Int = 0
+    
+    mutating func clearLastSearchText() {
+        lastSearchText = ""
+    }
 }

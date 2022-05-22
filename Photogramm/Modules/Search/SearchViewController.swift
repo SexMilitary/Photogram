@@ -108,25 +108,58 @@ private extension SearchViewController {
 
 private extension SearchViewController {
     func search(query: String) {
-        let currentNumber = pageViewController.currentNumber
-        let request = SearchPhotoRequest(page: pagesControllers[currentNumber].initialPage, query: query)
-        photoService.searchPhotos(request: request) { [weak self] result in
-            guard let self = self else { return }
-            self.pagesControllers[currentNumber].initialPage += 1
-            self.pagesControllers[self.pageViewController.currentNumber].lastSearchText = query
-            
-            switch result {
-            case .success(let data):
-                let collectionVC = self.pageViewController.viewControllers?.first as? SearchCollectionViewController
-                if collectionVC?.findedPhotos == nil || (collectionVC?.findedPhotos.isEmpty ?? false) {
-                    collectionVC?.findedPhotos = data
-                } else {
-                    collectionVC?.findedPhotos.results.append(contentsOf: data.results)
+        let selectedIndex = filterView.model.selectedIndex
+        guard let filterSelectedType = SearchFilter.Filter(rawValue: selectedIndex) else { return }
+        switch filterSelectedType {
+        case .photos:
+            let currentNumber = pageViewController.currentNumber
+            let request = SearchPhotoRequest(page: pagesControllers[currentNumber].initialPage, query: query)
+            photoService.searchPhotos(request: request) { [weak self] result in
+                guard let self = self else { return }
+                self.pagesControllers[currentNumber].initialPage += 1
+                self.pagesControllers[self.pageViewController.currentNumber].lastSearchText = query
+                
+                switch result {
+                case .success(let data):
+                    let collectionVC = self.pageViewController.viewControllers?.first as? SearchCollectionViewController
+                    if collectionVC?.findedPhotos == nil || (collectionVC?.findedPhotos.isEmpty ?? false) {
+                        collectionVC?.findedPhotos = data
+                    } else {
+                        collectionVC?.findedPhotos.results.append(contentsOf: data.results)
+                    }
+                case .failure(let error):
+                    UIAlertController.alert(title: "Warning", msg: error.localizedDescription, target: self)
                 }
-            case .failure(let error):
-                UIAlertController.alert(title: "Warning", msg: error.localizedDescription, target: self)
             }
+        case .collections:
+            let currentNumber = pageViewController.currentNumber
+            let request = SearchCollectionsRequest(query: query, page: pagesControllers[currentNumber].initialPage)
+            photoService.searchCollections(request: request) { [weak self] result in
+                guard let self = self else { return }
+                
+                self.pagesControllers[currentNumber].initialPage += 1
+                self.pagesControllers[self.pageViewController.currentNumber].lastSearchText = query
+                
+                switch result {
+                case .success(let data):
+                    let collectionVC = self.pageViewController.viewControllers?.first as? SearchCollectionViewController
+                    if collectionVC?.findedPhotos == nil || (collectionVC?.findedPhotos.isEmpty ?? false) {
+//                        collectionVC?.findedPhotos = data
+                    } else {
+//                        collectionVC?.findedPhotos.results.append(contentsOf: data.results)
+                    }
+                case .failure(let error):
+                    UIAlertController.alert(title: "Warning", msg: error.localizedDescription, target: self)
+                }
+            }
+        case .users:
+            break
+        case .wallpapers:
+            break
+        case .avatars:
+            break
         }
+        
     }
     
     func searchByBarText() {
@@ -140,7 +173,9 @@ private extension SearchViewController {
     }
     
     func clearAllPages() {
-        pagesControllers.forEach { page in
+        pagesControllers.enumerated().forEach { index, page in
+            pagesControllers[index].clearLastSearchText()
+            
             guard let searchController = page.viewController as? SearchCollectionViewController else { return }
             searchController.findedPhotos.clear()
             searchController.reloadCollection()
@@ -157,6 +192,10 @@ extension SearchViewController: SearchCollectionViewDelegate {
     }
     func loadMore() {
         search(query: searchBarText)
+    }
+    func didSelect(model: Photo) {
+        let detailVC = MainDetailViewController(viewModel: model)
+        present(detailVC, animated: true)
     }
 }
 

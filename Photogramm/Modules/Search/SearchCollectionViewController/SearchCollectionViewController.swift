@@ -12,6 +12,7 @@ protocol SearchCollectionViewDelegate: AnyObject {
     var tabBarHeight: CGFloat { get }
     func searchPhotos()
     func loadMore()
+    func didSelect(model: Photo)
 }
 
 class SearchCollectionViewController: UIViewController, PageableController {
@@ -31,14 +32,20 @@ class SearchCollectionViewController: UIViewController, PageableController {
         }
     }
     
-    private var layout = PinterestLayout()
+    private lazy var layout: UICollectionViewLayout = {
+        let layout = number == 0 ? PinterestLayout() : MosaicLayout()
+        (layout as? PinterestLayout)?.delegate = self
+        
+        return layout
+    }()
     
     private lazy var collectionView: UICollectionView = {
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.delegate = self
         view.dataSource = self
-        view.register(SearchCell.self, forCellWithReuseIdentifier: SearchCell.reuseId)
+        view.register(SearchCell.self,
+                      forCellWithReuseIdentifier: SearchCell.reuseId)
         view.keyboardDismissMode = .onDrag
         view.contentInset.top = 50
         view.contentInset.bottom = 100
@@ -55,8 +62,6 @@ class SearchCollectionViewController: UIViewController, PageableController {
     init(number: Int) {
         self.number = number
         super.init(nibName: nil, bundle: nil)
-        
-        layout.delegate = self
         
         view.addSubview(collectionView)
         NSLayoutConstraint.activate([
@@ -124,7 +129,7 @@ extension SearchCollectionViewController: UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
+        searchDelegate?.didSelect(model: findedPhotos.results[indexPath.item])
     }
 }
 

@@ -9,6 +9,7 @@ import Foundation
 
 class SearchFilters {
     var filters: [SearchFilter] = SearchFilter.getFilters
+    var selectedIndex: Int = 0
 }
 
 class SearchFilter {

@@ -8,7 +8,7 @@
 import Foundation
 
 struct UserLinks: Codable {
-    let linksSelf, html, photos, likes: String
+    let linksSelf, html, photos, likes: String?
 
     enum CodingKeys: String, CodingKey {
         case linksSelf = "self"
