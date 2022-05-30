@@ -23,7 +23,7 @@ class SearchCollectionViewController: UIViewController, PageableController {
     
     private var isLoading = false
     
-    var findedPhotos: SearchPhotos = SearchPhotos() {
+    var model: SearchCollectionViewModel? {
         didSet {
             isLoading = false
             reloadCollection()
@@ -33,8 +33,14 @@ class SearchCollectionViewController: UIViewController, PageableController {
     }
     
     private lazy var layout: UICollectionViewLayout = {
-        let layout = number == 0 ? PinterestLayout() : MosaicLayout()
-        (layout as? PinterestLayout)?.delegate = self
+        let layout: UICollectionViewLayout
+        switch number {
+        case 0:
+            layout = PinterestLayout()
+            (layout as? PinterestLayout)?.delegate = self
+        default:
+            layout = UICollectionViewFlowLayout()
+        }
         
         return layout
     }()
@@ -46,8 +52,10 @@ class SearchCollectionViewController: UIViewController, PageableController {
         view.dataSource = self
         view.register(SearchCell.self,
                       forCellWithReuseIdentifier: SearchCell.reuseId)
+        view.register(SearchAlbumCollectionViewCell.self,
+                      forCellWithReuseIdentifier: SearchAlbumCollectionViewCell.reuseId)
         view.keyboardDismissMode = .onDrag
-        view.contentInset.top = 50
+        view.contentInset.top = number == 0 ? 50 : 70
         view.contentInset.bottom = 100
         view.verticalScrollIndicatorInsets.top = 50
         
@@ -95,21 +103,49 @@ class SearchCollectionViewController: UIViewController, PageableController {
 
 extension SearchCollectionViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return findedPhotos.results.count
+        guard let model = model else { return 0 }
+        switch model {
+        case .photo(let model):
+            return model.results.count
+        case .collection(let model):
+            return model.results.count
+        }
     }
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SearchCell.reuseId, for: indexPath) as? SearchCell
-        cell?.info = findedPhotos.results[indexPath.item]
-        cell?.shadowDecorate(radius: 18)
-        
-        return cell ?? UICollectionViewCell()
+        guard let model = model else { return UICollectionViewCell() }
+        switch model {
+        case .photo(let model):
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SearchCell.reuseId, for: indexPath) as? SearchCell
+            cell?.info = model.results[indexPath.item]
+            cell?.shadowDecorate(radius: 18)
+            
+            return cell ?? UICollectionViewCell()
+        case .collection(let model):
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SearchAlbumCollectionViewCell.reuseId,
+                                                          for: indexPath) as? SearchAlbumCollectionViewCell
+            cell?.model = model.results[indexPath.item]
+            cell?.shadowDecorate(radius: 10, offset: CGSize(width: 0, height: 0))
+            
+            return cell ?? UICollectionViewCell()
+        }
     }
 }
 
 extension SearchCollectionViewController: UICollectionViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let existingCount = findedPhotos.results.count
-        let totalCount = findedPhotos.totalPages
+        let existingCount: Int
+        let totalCount: Int
+        
+        guard let model = model else { return }
+        switch model {
+        case .photo(model: let model):
+            existingCount = model.results.count
+            totalCount = model.totalPages
+        case .collection(model: let model):
+            existingCount = model.results.count
+            totalCount = model.totalPages
+        }
+        
         guard existingCount < totalCount else { return }
         
         let contentHeight = scrollView.contentSize.height
@@ -129,15 +165,26 @@ extension SearchCollectionViewController: UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        searchDelegate?.didSelect(model: findedPhotos.results[indexPath.item])
+//        searchDelegate?.didSelect(model: findedPhotos.results[indexPath.item])
+    }
+}
+
+extension SearchCollectionViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: UIScreen.main.bounds.width - 40, height: 300)
     }
 }
 
 extension SearchCollectionViewController: PinterestLayoutDelegate {
     func collectionView(_ collectionView: UICollectionView, heightForPhotoAtIndexPath indexPath: IndexPath) -> CGFloat {
-        guard indexPath.item <= findedPhotos.results.endIndex - 1 else { return 0 }
-        let width = (UIScreen.main.bounds.width / 2) - spacing
-        
-        return width / findedPhotos.results[indexPath.item].ratio
+        guard let model = model else { return 0 }
+        switch model {
+        case .photo(model: let model):
+            guard indexPath.item <= model.results.endIndex - 1 else { return 0 }
+            let width = (UIScreen.main.bounds.width / 2) - spacing
+            return width / model.results[indexPath.item].ratio
+        case .collection(_):
+            return 200
+        }
     }
 }
