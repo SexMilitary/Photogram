@@ -18,6 +18,8 @@ class PhotosCollectionView: UICollectionView {
     
     var photos: PhotoResponce?
     
+    private let queue = OperationQueue()
+    
     init() {
         let layout = CardsCollectionViewLayout()
         super.init(frame: .zero, collectionViewLayout: layout)
@@ -63,9 +65,26 @@ extension PhotosCollectionView: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: indexPath) as? PhotoCell
-        cell?.info = photos?[indexPath.item]
-        return cell ?? UICollectionViewCell()
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: indexPath) as! PhotoCell
+        cell.info = photos?[indexPath.item]
+        cell.display(image: nil)
+        
+        let photoStr = photos?[indexPath.item].urls.small ?? ""
+        let url = URL(string: photoStr)
+        let op = NetworkImageOperation(url: url!)
+        op.completionBlock = {
+            DispatchQueue.main.async {
+                guard let cell = collectionView.cellForItem(at: indexPath) as? PhotoCell else {
+                    return
+                }
+                
+                cell.display(image: op.image)
+            }
+        }
+        
+        queue.addOperation(op)
+        
+        return cell
     }
     
 }

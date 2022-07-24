@@ -100,13 +100,14 @@ class PhotoCell: UICollectionViewCell {
         view.translatesAutoresizingMaskIntoConstraints = false
         view.hidesWhenStopped = true
         view.tintColor = .systemBlue
+        view.startAnimating()
         
         return view
     }()
     
     var info: Photo? {
         didSet {
-            assignPhoto()
+//            assignPhoto() Commited for use NetworkImageOperation
             
             userImg.fadeIn(duration: 0.2)
             userImg.set(imageURL: info?.user.profileImage.large) {
@@ -221,13 +222,22 @@ class PhotoCell: UICollectionViewCell {
             return
         }
         
-        indicator.startAnimating()
         img.set(imageURL: data.urls.small) { [weak self] in
             self?.indicator.stopAnimating()
             
             UIView.animate(withDuration: 0.3) {
                 self?.img.alpha = 1
             }
+        }
+    }
+    
+    func display(image: UIImage?) {
+        indicator.stopAnimating()
+        
+        img.image = image
+        
+        UIView.animate(withDuration: 0.3) {
+            self.img.alpha = 1
         }
     }
    
